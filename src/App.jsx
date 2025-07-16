@@ -1,0 +1,67 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AdminAuthProvider } from './contexts/AdminAuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import Layout from './components/Layout';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import HSCManagement from './pages/HSCManagement';
+import UserManagement from './pages/UserManagement';
+import ProtectedRoute from './components/ProtectedRoute';
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AdminAuthProvider>
+        <Router>
+          <div className="App">
+            <Routes>
+              {/* Auth routes */}
+              <Route path="/login" element={<Login />} />
+
+              {/* Protected admin routes */}
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Navigate to="/dashboard" replace />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="hsc-management" element={<HSCManagement />} />
+                <Route path="users" element={<UserManagement />} />
+
+                {/* Placeholder routes */}
+                <Route path="advertisements" element={
+                  <div className="card p-8 text-center">
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                      Advertisement Management Coming Soon
+                    </h2>
+                  </div>
+                } />
+                <Route path="packages" element={
+                  <div className="card p-8 text-center">
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                      HSC Package Management Coming Soon
+                    </h2>
+                  </div>
+                } />
+                <Route path="settings" element={
+                  <div className="card p-8 text-center">
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                      Settings Coming Soon
+                    </h2>
+                  </div>
+                } />
+              </Route>
+
+              {/* Catch all route */}
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </div>
+        </Router>
+      </AdminAuthProvider>
+    </ThemeProvider>
+  );
+}
+
+export default App;
