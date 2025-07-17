@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import HSCManagement from './pages/HSCManagement';
 import UserManagement from './pages/UserManagement';
+import HSCPackages from './pages/HSCPackages';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -38,13 +39,7 @@ function App() {
                     </h2>
                   </div>
                 } />
-                <Route path="packages" element={
-                  <div className="card p-8 text-center">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                      HSC Package Management Coming Soon
-                    </h2>
-                  </div>
-                } />
+                <Route path="packages" element={<HSCPackages />} />
                 <Route path="settings" element={
                   <div className="card p-8 text-center">
                     <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
