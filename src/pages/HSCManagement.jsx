@@ -138,7 +138,7 @@ const HSCManagement = () => {
           <div className="flex items-center mb-4">
             <Gift className="w-6 h-6 text-green-600 mr-2" />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              HSG Gifts
+              HSG Gems
             </h3>
           </div>
           <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 text-center">
@@ -156,7 +156,7 @@ const HSCManagement = () => {
           <div className="flex items-center mb-4">
             <DollarSign className="w-6 h-6 text-purple-600 mr-2" />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              HSD Dollars
+              HSD Diamond
             </h3>
           </div>
           <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 text-center">
@@ -290,14 +290,14 @@ const HSCManagement = () => {
           </div>
 
           <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-            <h4 className="font-semibold text-green-800 dark:text-green-300 mb-2">HSG (Holidaysri Gifts)</h4>
+            <h4 className="font-semibold text-green-800 dark:text-green-300 mb-2">HSG (Holidaysri Gems)</h4>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Welcome gift tokens given to new users (100 HSG). Can be used for publishing first advertisements. Convertible to LKR value.
             </p>
           </div>
 
           <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
-            <h4 className="font-semibold text-purple-800 dark:text-purple-300 mb-2">HSD (Holidaysri Dollars)</h4>
+            <h4 className="font-semibold text-purple-800 dark:text-purple-300 mb-2">HSD (Holidaysri Diamond)</h4>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Earnings from platform activities. Users start with 0 HSD and earn through various platform interactions. Convertible to LKR value.
             </p>
