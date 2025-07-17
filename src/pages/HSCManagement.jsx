@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DollarSign, Save, AlertCircle, CheckCircle, History, Gift, Coins } from 'lucide-react';
+import { AlertCircle, CheckCircle, History } from 'lucide-react';
 import { adminAPI } from '../config/api';
 
 const HSCManagement = () => {
@@ -118,7 +118,11 @@ const HSCManagement = () => {
         {/* HSC Configuration */}
         <div className="card p-6">
           <div className="flex items-center mb-4">
-            <Coins className="w-6 h-6 text-blue-600 mr-2" />
+            <img
+              src="https://res.cloudinary.com/dqdcmluxj/image/upload/v1734337684/hsc_resll6_1_q0eksv.webp"
+              alt="HSC Coin"
+              className="w-6 h-6 object-contain mr-2"
+            />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               HSC Tokens
             </h3>
@@ -136,7 +140,11 @@ const HSCManagement = () => {
         {/* HSG Configuration */}
         <div className="card p-6">
           <div className="flex items-center mb-4">
-            <Gift className="w-6 h-6 text-green-600 mr-2" />
+            <img
+              src="https://res.cloudinary.com/dqdcmluxj/image/upload/v1734594961/Untitled-12_mcloq6.webp"
+              alt="HSG Gem"
+              className="w-6 h-6 object-contain mr-2"
+            />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               HSG Gems
             </h3>
@@ -154,7 +162,11 @@ const HSCManagement = () => {
         {/* HSD Configuration */}
         <div className="card p-6">
           <div className="flex items-center mb-4">
-            <DollarSign className="w-6 h-6 text-purple-600 mr-2" />
+            <img
+              src="https://res.cloudinary.com/dqdcmluxj/image/upload/v1734609205/file_g75vh2.png"
+              alt="HSD Diamond"
+              className="w-6 h-6 object-contain mr-2"
+            />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               HSD Diamond
             </h3>
@@ -175,7 +187,11 @@ const HSCManagement = () => {
         {/* Update HSC Value */}
         <div className="card p-6">
           <div className="flex items-center mb-4">
-            <Coins className="w-5 h-5 text-blue-600 mr-2" />
+            <img
+              src="https://res.cloudinary.com/dqdcmluxj/image/upload/v1734337684/hsc_resll6_1_q0eksv.webp"
+              alt="HSC Coin"
+              className="w-5 h-5 object-contain mr-2"
+            />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Update HSC
             </h3>
@@ -208,7 +224,11 @@ const HSCManagement = () => {
         {/* Update HSG Value */}
         <div className="card p-6">
           <div className="flex items-center mb-4">
-            <Gift className="w-5 h-5 text-green-600 mr-2" />
+            <img
+              src="https://res.cloudinary.com/dqdcmluxj/image/upload/v1734594961/Untitled-12_mcloq6.webp"
+              alt="HSG Gem"
+              className="w-5 h-5 object-contain mr-2"
+            />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Update HSG
             </h3>
@@ -241,7 +261,11 @@ const HSCManagement = () => {
         {/* Update HSD Value */}
         <div className="card p-6">
           <div className="flex items-center mb-4">
-            <DollarSign className="w-5 h-5 text-purple-600 mr-2" />
+            <img
+              src="https://res.cloudinary.com/dqdcmluxj/image/upload/v1734609205/file_g75vh2.png"
+              alt="HSD Diamond"
+              className="w-5 h-5 object-contain mr-2"
+            />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Update HSD
             </h3>
