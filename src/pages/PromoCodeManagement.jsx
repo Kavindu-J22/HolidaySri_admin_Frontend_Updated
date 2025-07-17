@@ -162,7 +162,7 @@ const PromoCodeManagement = () => {
           <button
             onClick={fetchConfig}
             disabled={loading}
-            className="flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
@@ -197,16 +197,16 @@ const PromoCodeManagement = () => {
       {/* Promo Code Types Configuration */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {promoTypes.map((promoType) => (
-          <div key={promoType.key} className={`p-6 rounded-lg border-2 ${promoType.color}`}>
+          <div key={promoType.key} className={`p-6 rounded-lg border-2 ${promoType.color} dark:bg-gray-800 dark:border-gray-600`}>
             <div className="flex items-center space-x-3 mb-4">
               <span className="text-2xl">{promoType.icon}</span>
-              <h3 className="text-lg font-semibold text-gray-900">{promoType.name}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{promoType.name}</h3>
             </div>
 
             <div className="space-y-4">
               {/* Price */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   <DollarSign className="w-4 h-4 inline mr-1" />
                   Price (LKR)
                 </label>
@@ -215,17 +215,17 @@ const PromoCodeManagement = () => {
                   value={formData[promoType.key]?.price || 0}
                   onChange={(e) => handleInputChange(promoType.key, 'price', e.target.value)}
                   disabled={promoType.key === 'free'}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white"
                   min="0"
                 />
                 {promoType.key === 'free' && (
-                  <p className="text-xs text-gray-500 mt-1">Free promo code price is always 0 LKR</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Free promo code price is always 0 LKR</p>
                 )}
               </div>
 
               {/* Discount Rate */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   <TrendingUp className="w-4 h-4 inline mr-1" />
                   Discount Rate (%)
                 </label>
@@ -233,7 +233,7 @@ const PromoCodeManagement = () => {
                   type="number"
                   value={formData[promoType.key]?.discountRate || 0}
                   onChange={(e) => handleInputChange(promoType.key, 'discountRate', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                   min="0"
                   max="100"
                 />
@@ -241,7 +241,7 @@ const PromoCodeManagement = () => {
 
               {/* Earning for Purchase */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   <ShoppingCart className="w-4 h-4 inline mr-1" />
                   Earning for Purchase PromoCode (LKR)
                 </label>
@@ -249,14 +249,14 @@ const PromoCodeManagement = () => {
                   type="number"
                   value={formData[promoType.key]?.earningForPurchase || 0}
                   onChange={(e) => handleInputChange(promoType.key, 'earningForPurchase', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                   min="0"
                 />
               </div>
 
               {/* Earning for Monthly Ad */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   <Calendar className="w-4 h-4 inline mr-1" />
                   Earning for Monthly Ad (LKR)
                 </label>
@@ -264,14 +264,14 @@ const PromoCodeManagement = () => {
                   type="number"
                   value={formData[promoType.key]?.earningForMonthlyAd || 0}
                   onChange={(e) => handleInputChange(promoType.key, 'earningForMonthlyAd', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                   min="0"
                 />
               </div>
 
               {/* Earning for Daily Ad */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   <Clock className="w-4 h-4 inline mr-1" />
                   Earning for Daily Ad (LKR)
                 </label>
@@ -279,7 +279,7 @@ const PromoCodeManagement = () => {
                   type="number"
                   value={formData[promoType.key]?.earningForDailyAd || 0}
                   onChange={(e) => handleInputChange(promoType.key, 'earningForDailyAd', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                   min="0"
                 />
               </div>
@@ -341,7 +341,7 @@ const PromoCodeManagement = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               <ShoppingCart className="w-4 h-4 inline mr-1" />
-              Purchase Discount (LKR)
+              Purchase-Promo Discount (LKR)
             </label>
             <input
               type="number"
