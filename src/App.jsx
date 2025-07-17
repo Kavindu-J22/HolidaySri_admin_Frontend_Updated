@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import HSCManagement from './pages/HSCManagement';
 import UserManagement from './pages/UserManagement';
 import HSCPackages from './pages/HSCPackages';
+import PromoCodeManagement from './pages/PromoCodeManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="hsc-management" element={<HSCManagement />} />
                 <Route path="users" element={<UserManagement />} />
+                <Route path="promo-codes" element={<PromoCodeManagement />} />
 
                 {/* Placeholder routes */}
                 <Route path="advertisements" element={

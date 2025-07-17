@@ -51,6 +51,9 @@ export const adminAPI = {
   createHSCPackage: (packageData) => api.post('/admin/hsc-packages', packageData),
   updateHSCPackage: (packageId, packageData) => api.put(`/admin/hsc-packages/${packageId}`, packageData),
   deleteHSCPackage: (packageId) => api.delete(`/admin/hsc-packages/${packageId}`),
+  getPromoCodeConfig: () => api.get('/promocodes/admin/config'),
+  updatePromoCodeConfig: (configData) => api.put('/promocodes/admin/config', configData),
+  getPromoCodeTransactions: (params) => api.get('/promocodes/admin/transactions', { params }),
 };
 
 export default api;

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  Menu, 
-  X, 
-  Sun, 
-  Moon, 
+import {
+  Menu,
+  X,
+  Sun,
+  Moon,
   LogOut,
   Shield,
   LayoutDashboard,
@@ -12,7 +12,8 @@ import {
   Users,
   FileText,
   Package,
-  Settings
+  Settings,
+  Gift
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -39,6 +40,11 @@ const Layout = () => {
       name: 'User Management',
       path: '/users',
       icon: Users,
+    },
+    {
+      name: 'Promo Codes',
+      path: '/promo-codes',
+      icon: Gift,
     },
     {
       name: 'Advertisements',
