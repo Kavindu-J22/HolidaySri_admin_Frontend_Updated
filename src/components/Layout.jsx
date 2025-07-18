@@ -32,7 +32,7 @@ const Layout = () => {
       icon: LayoutDashboard,
     },
     {
-      name: 'HSC Management',
+      name: 'Token Management (HSC, HSG, HSD)',
       path: '/hsc-management',
       icon: DollarSign,
     },
