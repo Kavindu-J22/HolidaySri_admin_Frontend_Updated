@@ -13,7 +13,8 @@ import {
   FileText,
   Package,
   Settings,
-  Gift
+  Gift,
+  CreditCard
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -45,6 +46,11 @@ const Layout = () => {
       name: 'Promo Codes',
       path: '/promo-codes',
       icon: Gift,
+    },
+    {
+      name: 'Claiming Requests',
+      path: '/claiming-requests',
+      icon: CreditCard,
     },
     {
       name: 'Advertisements',

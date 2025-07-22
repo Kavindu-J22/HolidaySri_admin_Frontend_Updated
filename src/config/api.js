@@ -54,6 +54,9 @@ export const adminAPI = {
   getPromoCodeConfig: () => api.get('/promocodes/admin/config'),
   updatePromoCodeConfig: (configData) => api.put('/promocodes/admin/config', configData),
   getPromoCodeTransactions: (params) => api.get('/promocodes/admin/transactions', { params }),
+  getClaimRequests: (params) => api.get('/admin/claim-requests', { params }),
+  approveClaimRequest: (requestId, adminNote) => api.post(`/admin/claim-requests/${requestId}/approve`, { adminNote }),
+  getClaimRequestStats: () => api.get('/admin/claim-requests/stats'),
 };
 
 export default api;
