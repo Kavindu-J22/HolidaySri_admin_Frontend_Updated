@@ -139,8 +139,8 @@ const ClaimingRequests = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl p-6 border border-yellow-200 dark:border-yellow-800">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl p-4 sm:p-6 border border-yellow-200 dark:border-yellow-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-yellow-800 dark:text-yellow-400">Pending Requests</p>
@@ -155,7 +155,7 @@ const ClaimingRequests = () => {
           </div>
         </div>
         
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 sm:p-6 border border-green-200 dark:border-green-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-green-800 dark:text-green-400">Approved</p>
@@ -170,7 +170,7 @@ const ClaimingRequests = () => {
           </div>
         </div>
         
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 sm:p-6 border border-blue-200 dark:border-blue-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-blue-800 dark:text-blue-400">Total Processed</p>
@@ -187,8 +187,8 @@ const ClaimingRequests = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-        <div className="flex flex-col sm:flex-row gap-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -220,8 +220,8 @@ const ClaimingRequests = () => {
 
       {/* Claim Requests List */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
             Claim Requests
           </h2>
         </div>
@@ -244,8 +244,8 @@ const ClaimingRequests = () => {
           ) : (
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {claimRequests.map((request) => (
-                <div key={request._id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                  <div className="flex items-center justify-between">
+                <div key={request._id} className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-3">
                         <div className="flex items-center space-x-2">
@@ -262,7 +262,7 @@ const ClaimingRequests = () => {
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm">
                         <div className="flex items-center space-x-2">
                           <User className="w-4 h-4 text-gray-400" />
                           <div>
@@ -298,22 +298,22 @@ const ClaimingRequests = () => {
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-2 ml-4">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 lg:ml-4">
                       <button
                         onClick={() => setSelectedRequest(request)}
-                        className="flex items-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                        className="flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm w-full sm:w-auto"
                       >
                         <Eye className="w-4 h-4" />
                         <span>View</span>
                       </button>
-                      
+
                       {request.status === 'pending' && (
                         <button
                           onClick={() => {
                             setSelectedRequest(request);
                             setShowApprovalModal(true);
                           }}
-                          className="flex items-center space-x-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                          className="flex items-center justify-center space-x-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm w-full sm:w-auto"
                         >
                           <Check className="w-4 h-4" />
                           <span>Approve</span>
@@ -330,11 +330,11 @@ const ClaimingRequests = () => {
 
       {/* View Request Modal */}
       {selectedRequest && !showApprovalModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
                   Claim Request Details
                 </h3>
                 <button
@@ -346,10 +346,10 @@ const ClaimingRequests = () => {
               </div>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
               {/* Request Summary */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Total Amount</p>
                     <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
@@ -376,7 +376,7 @@ const ClaimingRequests = () => {
               <div>
                 <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">User Information</h4>
                 <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Name</p>
                       <p className="font-medium text-gray-900 dark:text-white">{selectedRequest.userId?.name}</p>
@@ -401,7 +401,7 @@ const ClaimingRequests = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Bank</p>
                         <p className="font-medium text-gray-900 dark:text-white">{selectedRequest.bankDetails.bank}</p>
@@ -473,15 +473,15 @@ const ClaimingRequests = () => {
 
       {/* Approval Modal */}
       {showApprovalModal && selectedRequest && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-xl max-w-md w-full">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl max-w-md w-full mx-2 sm:mx-0">
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
                 Approve Claim Request
               </h3>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-4 sm:p-6 space-y-4">
               <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <AlertCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
@@ -507,20 +507,20 @@ const ClaimingRequests = () => {
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
+            <div className="p-4 sm:p-6 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
               <button
                 onClick={() => {
                   setShowApprovalModal(false);
                   setAdminNote('');
                 }}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors w-full sm:w-auto"
               >
                 Cancel
               </button>
               <button
                 onClick={handleApprove}
                 disabled={approving}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
+                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50 w-full sm:w-auto"
               >
                 {approving ? 'Processing...' : 'Approve & Send Email'}
               </button>
