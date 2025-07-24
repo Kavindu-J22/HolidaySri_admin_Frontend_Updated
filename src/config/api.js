@@ -60,7 +60,6 @@ export const adminAPI = {
   getHSCEarnedClaims: (params) => api.get('/admin/hsc-earned-claims', { params }),
   approveHSCEarnedClaim: (requestId, adminNote) => api.post(`/admin/hsc-earned-claims/${requestId}/approve`, { adminNote }),
   getHSCEarnedClaimStats: () => api.get('/admin/hsc-earned-claims/stats'),
-  testHSCEarnedClaims: () => api.get('/admin/hsc-earned-claims/test'),
 };
 
 export default api;

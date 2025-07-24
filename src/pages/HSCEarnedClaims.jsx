@@ -45,13 +45,10 @@ const HSCEarnedClaims = () => {
   const fetchClaimRequests = async () => {
     try {
       setLoading(true);
-      console.log('Fetching HSC earned claims with filters:', filters);
       const response = await adminAPI.getHSCEarnedClaims(filters);
-      console.log('HSC earned claims response:', response.data);
       setClaimRequests(response.data.claimRequests || []);
     } catch (error) {
       console.error('Failed to fetch HSC earned claim requests:', error);
-      console.error('Error details:', error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
@@ -59,13 +56,10 @@ const HSCEarnedClaims = () => {
 
   const fetchStats = async () => {
     try {
-      console.log('Fetching HSC earned claim stats...');
       const response = await adminAPI.getHSCEarnedClaimStats();
-      console.log('HSC earned claim stats response:', response.data);
       setStats(response.data);
     } catch (error) {
       console.error('Failed to fetch HSC earned claim stats:', error);
-      console.error('Stats error details:', error.response?.data || error.message);
     }
   };
 
@@ -132,32 +126,15 @@ const HSCEarnedClaims = () => {
             Manage HSC earned claim requests from users
           </p>
         </div>
-        <div className="flex space-x-2">
-          <button
-            onClick={async () => {
-              try {
-                const response = await adminAPI.testHSCEarnedClaims();
-                console.log('Test response:', response.data);
-                alert(`Test Results:\nTotal Claims: ${response.data.totalClaims}\nClaims with Populate: ${response.data.claimsWithPopulate}\nCheck console for details.`);
-              } catch (error) {
-                console.error('Test error:', error);
-                alert('Test failed. Check console for details.');
-              }
-            }}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200"
-          >
-            Test DB
-          </button>
-          <button
-            onClick={() => {
-              fetchClaimRequests();
-              fetchStats();
-            }}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
-          >
-            Refresh
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            fetchClaimRequests();
+            fetchStats();
+          }}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
+        >
+          Refresh
+        </button>
       </div>
 
       {/* Stats Cards */}
@@ -346,25 +323,27 @@ const HSCEarnedClaims = () => {
                     )}
                   </div>
 
-                  <div className="flex items-center space-x-2 ml-4">
+                  <div className="flex items-center space-x-3 ml-4">
                     <button
                       onClick={() => setSelectedRequest(request)}
-                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                      title="View Details"
+                      className="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40 rounded-lg transition-colors duration-200"
+                      title="View Full Details"
                     >
-                      <Eye className="w-4 h-4" />
+                      <Eye className="w-4 h-4 mr-1" />
+                      View Details
                     </button>
-                    
+
                     {request.status === 'pending' && (
                       <button
                         onClick={() => {
                           setSelectedRequest(request);
                           setShowApprovalModal(true);
                         }}
-                        className="p-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-colors"
-                        title="Approve"
+                        className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                        title="Approve Claim Request"
                       >
-                        <Check className="w-4 h-4" />
+                        <Check className="w-4 h-4 mr-1" />
+                        Approve
                       </button>
                     )}
                   </div>
@@ -439,6 +418,57 @@ const HSCEarnedClaims = () => {
                   </div>
                 </div>
               </div>
+
+              {/* HSC Earned Records */}
+              {selectedRequest.hscEarnedIds && selectedRequest.hscEarnedIds.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">HSC Earned Records</h4>
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 max-h-64 overflow-y-auto">
+                    <div className="space-y-3">
+                      {selectedRequest.hscEarnedIds.map((record, index) => (
+                        <div key={record._id || index} className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">HSC Amount</p>
+                              <p className="font-semibold text-blue-600 dark:text-blue-400">
+                                {record.earnedAmount?.toLocaleString() || 'N/A'} HSC
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Category</p>
+                              <p className="text-sm text-gray-700 dark:text-gray-300">
+                                {record.category || 'N/A'}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Date Earned</p>
+                              <p className="text-sm text-gray-700 dark:text-gray-300">
+                                {record.createdAt ? formatDate(record.createdAt) : 'N/A'}
+                              </p>
+                            </div>
+                          </div>
+                          {record.description && (
+                            <div className="mt-2">
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Description</p>
+                              <p className="text-sm text-gray-700 dark:text-gray-300">
+                                {record.description}
+                              </p>
+                            </div>
+                          )}
+                          {record.buyerUserId && (
+                            <div className="mt-2 flex items-center space-x-2">
+                              <User className="w-3 h-3 text-gray-400" />
+                              <span className="text-xs text-gray-600 dark:text-gray-400">
+                                From: {record.buyerUserId.name || 'Unknown'} ({record.buyerUserId.email || 'N/A'})
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Bank Details */}
               <div className="mb-6">
@@ -524,19 +554,22 @@ const HSCEarnedClaims = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-6">
                 <button
                   onClick={() => setSelectedRequest(null)}
-                  className="flex-1 px-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-medium transition-colors duration-200"
+                  className="flex-1 px-6 py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-semibold transition-colors duration-200 border border-gray-300 dark:border-gray-600"
                 >
-                  Close
+                  Close Details
                 </button>
                 {selectedRequest.status === 'pending' && (
                   <button
                     onClick={() => setShowApprovalModal(true)}
-                    className="flex-1 px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
                   >
-                    Approve Claim
+                    <div className="flex items-center justify-center">
+                      <Check className="w-4 h-4 mr-2" />
+                      Proceed to Approve
+                    </div>
                   </button>
                 )}
               </div>
@@ -561,57 +594,78 @@ const HSCEarnedClaims = () => {
             {/* Content */}
             <div className="p-6">
               <div className="text-center mb-6">
-                <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 mb-4">
-                  <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">
+                {/* Claim Summary */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-6 mb-6">
+                  <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
                     {selectedRequest.totalLKRAmount.toLocaleString()} LKR
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    ({selectedRequest.totalHSCAmount.toLocaleString()} HSC)
+                  <p className="text-lg text-gray-700 dark:text-gray-300 mb-3">
+                    {selectedRequest.totalHSCAmount.toLocaleString()} HSC • {selectedRequest.hscEarnedIds?.length || 0} Records
                   </p>
-                </div>
-
-                <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 mb-4">
-                  <div className="flex items-center justify-center mb-2">
-                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mr-2" />
-                    <span className="text-sm font-medium text-amber-800 dark:text-amber-300">Important:</span>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <p><strong>User:</strong> {selectedRequest.userId?.name || 'Unknown'}</p>
+                    <p><strong>Email:</strong> {selectedRequest.userEmail}</p>
+                    <p><strong>Rate:</strong> 1 HSC = {selectedRequest.hscToLKRRate} LKR</p>
                   </div>
-                  <p className="text-sm text-amber-700 dark:text-amber-300">
-                    Only approve this claim after confirming the bank transfer has been completed successfully.
-                  </p>
                 </div>
 
-                <div className="mb-4">
+                {/* Important Notice */}
+                <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 mb-6">
+                  <div className="flex items-center justify-center mb-3">
+                    <AlertCircle className="w-6 h-6 text-amber-600 dark:text-amber-400 mr-2" />
+                    <span className="text-lg font-semibold text-amber-800 dark:text-amber-300">Important Notice</span>
+                  </div>
+                  <div className="text-sm text-amber-700 dark:text-amber-300 space-y-2">
+                    <p>• Only approve this claim after confirming the bank transfer has been completed successfully</p>
+                    <p>• User will receive an email notification upon approval</p>
+                    <p>• HSC earned records will be marked as "Paid as LKR"</p>
+                    <p>• This action cannot be undone</p>
+                  </div>
+                </div>
+
+                {/* Admin Note */}
+                <div className="text-left">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Admin Note (Optional)
                   </label>
                   <textarea
                     value={adminNote}
                     onChange={(e) => setAdminNote(e.target.value)}
-                    placeholder="Add any notes about this approval..."
-                    rows={3}
+                    placeholder="Add any notes about this approval (e.g., transaction reference, bank confirmation details)..."
+                    rows={4}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
                   />
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
                 <button
                   onClick={() => {
                     setShowApprovalModal(false);
                     setAdminNote('');
                   }}
                   disabled={approving}
-                  className="flex-1 px-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-medium transition-colors duration-200 disabled:opacity-50"
+                  className="flex-1 px-6 py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-semibold transition-colors duration-200 disabled:opacity-50 border border-gray-300 dark:border-gray-600"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleApprove}
                   disabled={approving}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 disabled:opacity-50"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
                 >
-                  {approving ? 'Approving...' : 'Confirm Approval'}
+                  {approving ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Processing...
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      <Check className="w-4 h-4 mr-2" />
+                      Approve & Transfer
+                    </div>
+                  )}
                 </button>
               </div>
             </div>
