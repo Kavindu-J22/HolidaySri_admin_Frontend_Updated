@@ -358,7 +358,7 @@ const PromoCodeManagement = () => {
         </div>
 
         {/* Selling Advertisement Fee */}
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-lg border border-purple-200 dark:border-purple-800">
+        <div className="m-[10px_5px] bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-lg border border-purple-200 dark:border-purple-800">
           <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-300 mb-4 flex items-center">
             <ShoppingCart className="w-5 h-5 mr-2" />
             Promocode Selling Settings
