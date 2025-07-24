@@ -45,10 +45,13 @@ const HSCEarnedClaims = () => {
   const fetchClaimRequests = async () => {
     try {
       setLoading(true);
+      console.log('Fetching HSC earned claims with filters:', filters);
       const response = await adminAPI.getHSCEarnedClaims(filters);
-      setClaimRequests(response.data.claimRequests);
+      console.log('HSC earned claims response:', response.data);
+      setClaimRequests(response.data.claimRequests || []);
     } catch (error) {
       console.error('Failed to fetch HSC earned claim requests:', error);
+      console.error('Error details:', error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
@@ -56,10 +59,13 @@ const HSCEarnedClaims = () => {
 
   const fetchStats = async () => {
     try {
+      console.log('Fetching HSC earned claim stats...');
       const response = await adminAPI.getHSCEarnedClaimStats();
+      console.log('HSC earned claim stats response:', response.data);
       setStats(response.data);
     } catch (error) {
       console.error('Failed to fetch HSC earned claim stats:', error);
+      console.error('Stats error details:', error.response?.data || error.message);
     }
   };
 
@@ -117,13 +123,41 @@ const HSCEarnedClaims = () => {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          HSC Earned Claims
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
-          Manage HSC earned claim requests from users
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            HSC Earned Claims
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Manage HSC earned claim requests from users
+          </p>
+        </div>
+        <div className="flex space-x-2">
+          <button
+            onClick={async () => {
+              try {
+                const response = await adminAPI.testHSCEarnedClaims();
+                console.log('Test response:', response.data);
+                alert(`Test Results:\nTotal Claims: ${response.data.totalClaims}\nClaims with Populate: ${response.data.claimsWithPopulate}\nCheck console for details.`);
+              } catch (error) {
+                console.error('Test error:', error);
+                alert('Test failed. Check console for details.');
+              }
+            }}
+            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200"
+          >
+            Test DB
+          </button>
+          <button
+            onClick={() => {
+              fetchClaimRequests();
+              fetchStats();
+            }}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
+          >
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}

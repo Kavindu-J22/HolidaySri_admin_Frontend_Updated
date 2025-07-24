@@ -57,6 +57,10 @@ export const adminAPI = {
   getClaimRequests: (params) => api.get('/admin/claim-requests', { params }),
   approveClaimRequest: (requestId, adminNote) => api.post(`/admin/claim-requests/${requestId}/approve`, { adminNote }),
   getClaimRequestStats: () => api.get('/admin/claim-requests/stats'),
+  getHSCEarnedClaims: (params) => api.get('/admin/hsc-earned-claims', { params }),
+  approveHSCEarnedClaim: (requestId, adminNote) => api.post(`/admin/hsc-earned-claims/${requestId}/approve`, { adminNote }),
+  getHSCEarnedClaimStats: () => api.get('/admin/hsc-earned-claims/stats'),
+  testHSCEarnedClaims: () => api.get('/admin/hsc-earned-claims/test'),
 };
 
 export default api;
