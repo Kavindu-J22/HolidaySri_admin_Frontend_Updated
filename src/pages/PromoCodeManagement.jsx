@@ -48,6 +48,7 @@ const PromoCodeManagement = () => {
       earningForDailyAd: 10
     },
     sellAdFee: 100, // HSC fee for selling advertisement
+    accessPromoCodeViewAmount: 50, // HSC amount for accessing promo code view page
     discounts: {
       monthlyAdDiscount: 500,
       dailyAdDiscount: 50,
@@ -377,6 +378,30 @@ const PromoCodeManagement = () => {
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               HSC amount users need to pay to post their promocode for sale
+            </p>
+          </div>
+        </div>
+
+        {/* Access Promo Code View Amount */}
+        <div className="m-[10px_5px] bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
+          <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-4 flex items-center">
+            <Gift className="w-5 h-5 mr-2" />
+            Promo Code Access Settings
+          </h3>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <DollarSign className="w-4 h-4 inline mr-1" />
+              Access Promo Code View Page Amount (HSC)
+            </label>
+            <input
+              type="number"
+              value={formData.accessPromoCodeViewAmount || 0}
+              onChange={(e) => setFormData(prev => ({ ...prev, accessPromoCodeViewAmount: parseInt(e.target.value) || 0 }))}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+              min="0"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              One-time HSC amount non-agents need to pay to access the promo code viewing page. Agents get free access.
             </p>
           </div>
         </div>
