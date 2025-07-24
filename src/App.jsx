@@ -10,6 +10,7 @@ import UserManagement from './pages/UserManagement';
 import HSCPackages from './pages/HSCPackages';
 import PromoCodeManagement from './pages/PromoCodeManagement';
 import ClaimingRequests from './pages/ClaimingRequests';
+import HSCEarnedClaims from './pages/HSCEarnedClaims';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
                 <Route path="users" element={<UserManagement />} />
                 <Route path="promo-codes" element={<PromoCodeManagement />} />
                 <Route path="claiming-requests" element={<ClaimingRequests />} />
+                <Route path="hsc-earned-claims" element={<HSCEarnedClaims />} />
 
                 {/* Placeholder routes */}
                 <Route path="advertisements" element={
