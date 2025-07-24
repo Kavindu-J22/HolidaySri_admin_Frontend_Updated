@@ -47,6 +47,7 @@ const PromoCodeManagement = () => {
       earningForMonthlyAd: 50,
       earningForDailyAd: 10
     },
+    sellAdFee: 100, // HSC fee for selling advertisement
     discounts: {
       monthlyAdDiscount: 500,
       dailyAdDiscount: 50,
@@ -352,6 +353,30 @@ const PromoCodeManagement = () => {
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Discount when applying promo codes to purchases
+            </p>
+          </div>
+        </div>
+
+        {/* Selling Advertisement Fee */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-lg border border-purple-200 dark:border-purple-800">
+          <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-300 mb-4 flex items-center">
+            <ShoppingCart className="w-5 h-5 mr-2" />
+            Promocode Selling Settings
+          </h3>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <DollarSign className="w-4 h-4 inline mr-1" />
+              Advertisement Fee for Selling Promocode (HSC)
+            </label>
+            <input
+              type="number"
+              value={formData.sellAdFee || 0}
+              onChange={(e) => setFormData(prev => ({ ...prev, sellAdFee: parseInt(e.target.value) || 0 }))}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+              min="0"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              HSC amount users need to pay to post their promocode for sale
             </p>
           </div>
         </div>
