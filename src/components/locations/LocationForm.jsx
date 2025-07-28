@@ -123,8 +123,8 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
     if (files.length === 0) return;
 
     // Check if adding these files would exceed the limit
-    if (formData.images.length + files.length > 5) {
-      alert('You can upload a maximum of 5 images');
+    if (formData.images.length + files.length > 6) {
+      alert('You can upload a maximum of 6 images');
       return;
     }
 
@@ -379,9 +379,10 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
                 value={formData.distanceFromColombo}
                 onChange={handleInputChange}
                 className="input"
-                placeholder="Enter distance in kilometers"
+                placeholder="Enter distance in kilometers (e.g., 2.5)"
                 min="0"
                 max="500"
+                step="0.1"
                 required
               />
             </div>
@@ -506,7 +507,7 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
         {/* Images */}
         <div className="card p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Images (1-5 required)
+            Images (1-6 required)
           </h2>
 
           {/* Image Upload */}
@@ -522,18 +523,18 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
                 onChange={handleImageUpload}
                 className="hidden"
                 id="image-upload"
-                disabled={imageUploading || formData.images.length >= 5}
+                disabled={imageUploading || formData.images.length >= 6}
               />
               <label
                 htmlFor="image-upload"
-                className={`cursor-pointer ${imageUploading || formData.images.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`cursor-pointer ${imageUploading || formData.images.length >= 6 ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-600 dark:text-gray-400">
                   {imageUploading ? 'Uploading...' : 'Click to upload images'}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-                  PNG, JPG, GIF up to 10MB each ({formData.images.length}/5)
+                  PNG, JPG, GIF up to 10MB each ({formData.images.length}/6)
                 </p>
               </label>
             </div>
@@ -541,7 +542,7 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
 
           {/* Image Preview */}
           {formData.images.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {formData.images.map((image, index) => (
                 <div key={index} className="relative group">
                   <img
