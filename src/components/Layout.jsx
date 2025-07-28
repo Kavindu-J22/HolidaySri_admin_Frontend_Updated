@@ -65,6 +65,11 @@ const Layout = () => {
       icon: MapPin,
     },
     {
+      name: 'Locations',
+      path: '/locations',
+      icon: MapPin,
+    },
+    {
       name: 'Advertisements',
       path: '/advertisements',
       icon: FileText,

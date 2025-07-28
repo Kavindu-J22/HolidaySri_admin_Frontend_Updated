@@ -12,6 +12,7 @@ import PromoCodeManagement from './pages/PromoCodeManagement';
 import ClaimingRequests from './pages/ClaimingRequests';
 import HSCEarnedClaims from './pages/HSCEarnedClaims';
 import DestinationManagement from './pages/DestinationManagement';
+import LocationManagement from './pages/LocationManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
                 <Route path="claiming-requests" element={<ClaimingRequests />} />
                 <Route path="hsc-earned-claims" element={<HSCEarnedClaims />} />
                 <Route path="destinations" element={<DestinationManagement />} />
+                <Route path="locations" element={<LocationManagement />} />
 
                 {/* Placeholder routes */}
                 <Route path="advertisements" element={
