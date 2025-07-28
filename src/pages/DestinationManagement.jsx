@@ -179,7 +179,7 @@ const DestinationManagement = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Destination Management
@@ -190,7 +190,7 @@ const DestinationManagement = () => {
         </div>
         <button
           onClick={handleAddDestination}
-          className="btn-primary flex items-center space-x-2"
+          className="btn-primary flex items-center justify-center space-x-2 w-full sm:w-auto"
         >
           <Plus className="w-5 h-5" />
           <span>Add Destination</span>
@@ -198,7 +198,7 @@ const DestinationManagement = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="card p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -263,26 +263,28 @@ const DestinationManagement = () => {
       </div>
 
       {/* Search and Filters */}
-      <div className="card p-6">
-        <div className="flex flex-col lg:flex-row gap-4">
+      <div className="card p-4 sm:p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col space-y-4">
+          {/* Search Bar */}
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search destinations..."
                 value={searchTerm}
                 onChange={handleSearch}
-                className="input pl-10 w-full"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent transition-colors duration-200"
               />
             </div>
           </div>
-          
+
+          {/* Filter Controls */}
           <div className="flex flex-col sm:flex-row gap-4">
             <select
               value={filterType}
               onChange={(e) => handleFilterChange('type', e.target.value)}
-              className="input min-w-[150px]"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent transition-colors duration-200 min-w-[150px]"
             >
               <option value="">All Types</option>
               {destinationTypes.map(type => (
@@ -293,7 +295,7 @@ const DestinationManagement = () => {
             <select
               value={filterClimate}
               onChange={(e) => handleFilterChange('climate', e.target.value)}
-              className="input min-w-[180px]"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent transition-colors duration-200 min-w-[180px]"
             >
               <option value="">All Climates</option>
               {climateOptions.map(climate => (
@@ -304,7 +306,7 @@ const DestinationManagement = () => {
             {(searchTerm || filterType || filterClimate) && (
               <button
                 onClick={clearFilters}
-                className="btn-secondary whitespace-nowrap"
+                className="px-4 py-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 whitespace-nowrap"
               >
                 Clear Filters
               </button>
@@ -341,7 +343,7 @@ const DestinationManagement = () => {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {destinations.map((destination) => (
               <DestinationCard
                 key={destination._id}
@@ -354,23 +356,23 @@ const DestinationManagement = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-center items-center space-x-2">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
               <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
-              
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+
+              <span className="text-sm text-gray-600 dark:text-gray-400 text-center">
                 Page {currentPage} of {totalPages}
               </span>
-              
+
               <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
               </button>

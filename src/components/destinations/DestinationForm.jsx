@@ -197,10 +197,10 @@ const DestinationForm = ({ destination, onSubmit, onCancel }) => {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Column */}
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6">
             {/* Basic Information */}
             <div className="card p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -400,7 +400,7 @@ const DestinationForm = ({ destination, onSubmit, onCancel }) => {
           </div>
 
           {/* Right Column */}
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6">
             {/* Images */}
             <div className="card p-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -423,22 +423,22 @@ const DestinationForm = ({ destination, onSubmit, onCancel }) => {
         </div>
 
         {/* Form Actions */}
-        <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
           <button
             type="button"
             onClick={onCancel}
-            className="btn-secondary"
+            className="btn-secondary w-full sm:w-auto order-2 sm:order-1"
             disabled={loading}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="btn-primary"
+            className="btn-primary w-full sm:w-auto order-1 sm:order-2"
             disabled={loading}
           >
             {loading ? (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center justify-center space-x-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                 <span>{destination ? 'Updating...' : 'Creating...'}</span>
               </div>
