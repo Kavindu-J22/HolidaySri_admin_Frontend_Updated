@@ -15,7 +15,8 @@ import {
   Settings,
   Gift,
   CreditCard,
-  TrendingUp
+  TrendingUp,
+  MapPin
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -57,6 +58,11 @@ const Layout = () => {
       name: 'HSC Earned Claims',
       path: '/hsc-earned-claims',
       icon: TrendingUp,
+    },
+    {
+      name: 'Destinations',
+      path: '/destinations',
+      icon: MapPin,
     },
     {
       name: 'Advertisements',
