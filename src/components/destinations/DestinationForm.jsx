@@ -12,7 +12,8 @@ const DestinationForm = ({ destination, onSubmit, onCancel }) => {
     distanceFromColombo: '',
     province: '',
     district: '',
-    climate: ''
+    climate: '',
+    recommendedToVisit: ''
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -54,7 +55,8 @@ const DestinationForm = ({ destination, onSubmit, onCancel }) => {
         distanceFromColombo: destination.distanceFromColombo?.toString() || '',
         province: destination.province || '',
         district: destination.district || '',
-        climate: destination.climate || ''
+        climate: destination.climate || '',
+        recommendedToVisit: destination.recommendedToVisit || ''
       });
     }
   }, [destination]);
@@ -142,6 +144,12 @@ const DestinationForm = ({ destination, onSubmit, onCancel }) => {
 
     if (!formData.climate) {
       newErrors.climate = 'Climate is required';
+    }
+
+    if (!formData.recommendedToVisit.trim()) {
+      newErrors.recommendedToVisit = 'Recommended visit time is required';
+    } else if (formData.recommendedToVisit.length > 100) {
+      newErrors.recommendedToVisit = 'Recommended visit time must be less than 100 characters';
     }
 
     setErrors(newErrors);
@@ -366,6 +374,26 @@ const DestinationForm = ({ destination, onSubmit, onCancel }) => {
                   {errors.climate && (
                     <p className="text-red-500 text-sm mt-1">{errors.climate}</p>
                   )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Recommended to Visit *
+                  </label>
+                  <input
+                    type="text"
+                    name="recommendedToVisit"
+                    value={formData.recommendedToVisit}
+                    onChange={handleInputChange}
+                    className={`input w-full ${errors.recommendedToVisit ? 'border-red-500' : ''}`}
+                    placeholder="e.g., January to March, Year-round, December to April"
+                  />
+                  {errors.recommendedToVisit && (
+                    <p className="text-red-500 text-sm mt-1">{errors.recommendedToVisit}</p>
+                  )}
+                  <p className="text-gray-500 text-sm mt-1">
+                    Best time to visit this destination (e.g., seasonal recommendations)
+                  </p>
                 </div>
               </div>
             </div>
