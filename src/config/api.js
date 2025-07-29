@@ -60,6 +60,13 @@ export const adminAPI = {
   getHSCEarnedClaims: (params) => api.get('/admin/hsc-earned-claims', { params }),
   approveHSCEarnedClaim: (requestId, adminNote) => api.post(`/admin/hsc-earned-claims/${requestId}/approve`, { adminNote }),
   getHSCEarnedClaimStats: () => api.get('/admin/hsc-earned-claims/stats'),
+
+  // Membership endpoints
+  getMembershipTest: () => api.get('/admin/membership-test'),
+  getMembershipConfig: () => api.get('/admin/membership-config'),
+  updateMembershipConfig: (configData) => api.put('/admin/membership-config', configData),
+  getMembershipStats: () => api.get('/admin/membership-stats'),
+  getMembershipTransactions: (params) => api.get('/admin/membership-transactions', { params }),
 };
 
 export default api;

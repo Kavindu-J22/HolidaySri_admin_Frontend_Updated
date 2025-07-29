@@ -13,6 +13,7 @@ import ClaimingRequests from './pages/ClaimingRequests';
 import HSCEarnedClaims from './pages/HSCEarnedClaims';
 import DestinationManagement from './pages/DestinationManagement';
 import LocationManagement from './pages/LocationManagement';
+import MembershipSettings from './pages/MembershipSettings';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
                 <Route path="hsc-earned-claims" element={<HSCEarnedClaims />} />
                 <Route path="destinations" element={<DestinationManagement />} />
                 <Route path="locations" element={<LocationManagement />} />
+                <Route path="membership-settings" element={<MembershipSettings />} />
 
                 {/* Placeholder routes */}
                 <Route path="advertisements" element={

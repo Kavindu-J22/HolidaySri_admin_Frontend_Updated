@@ -16,7 +16,8 @@ import {
   Gift,
   CreditCard,
   TrendingUp,
-  MapPin
+  MapPin,
+  Crown
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -78,6 +79,11 @@ const Layout = () => {
       name: 'HSC Packages',
       path: '/packages',
       icon: Package,
+    },
+    {
+      name: 'Membership Settings',
+      path: '/membership-settings',
+      icon: Crown,
     },
     {
       name: 'Settings',
