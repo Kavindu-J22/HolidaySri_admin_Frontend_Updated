@@ -17,7 +17,8 @@ import {
   CreditCard,
   TrendingUp,
   MapPin,
-  Crown
+  Crown,
+  Briefcase
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -84,6 +85,11 @@ const Layout = () => {
       name: 'Membership Settings',
       path: '/membership-settings',
       icon: Crown,
+    },
+    {
+      name: 'Commercial Partner Settings',
+      path: '/commercial-partner-settings',
+      icon: Briefcase,
     },
     {
       name: 'Settings',

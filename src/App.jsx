@@ -14,6 +14,7 @@ import HSCEarnedClaims from './pages/HSCEarnedClaims';
 import DestinationManagement from './pages/DestinationManagement';
 import LocationManagement from './pages/LocationManagement';
 import MembershipSettings from './pages/MembershipSettings';
+import CommercialPartnerSettings from './pages/CommercialPartnerSettings';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
                 <Route path="destinations" element={<DestinationManagement />} />
                 <Route path="locations" element={<LocationManagement />} />
                 <Route path="membership-settings" element={<MembershipSettings />} />
+                <Route path="commercial-partner-settings" element={<CommercialPartnerSettings />} />
 
                 {/* Placeholder routes */}
                 <Route path="advertisements" element={

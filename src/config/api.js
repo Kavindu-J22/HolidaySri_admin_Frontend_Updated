@@ -67,6 +67,12 @@ export const adminAPI = {
   updateMembershipConfig: (configData) => api.put('/admin/membership-config', configData),
   getMembershipStats: () => api.get('/admin/membership-stats'),
   getMembershipTransactions: (params) => api.get('/admin/membership-transactions', { params }),
+
+  // Commercial Partner endpoints
+  getCommercialPartnerConfig: () => api.get('/admin/commercial-partner-config'),
+  updateCommercialPartnerConfig: (configData) => api.put('/admin/commercial-partner-config', configData),
+  getCommercialPartnerStats: () => api.get('/admin/commercial-partner-stats'),
+  getCommercialPartners: (params) => api.get('/admin/commercial-partners', { params }),
 };
 
 export default api;
