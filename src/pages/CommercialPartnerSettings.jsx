@@ -201,7 +201,10 @@ const CommercialPartnerSettings = () => {
                       Expiration
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Amount
+                      Amount (LKR)
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      HSC Amount
                     </th>
                   </tr>
                 </thead>
@@ -260,6 +263,9 @@ const CommercialPartnerSettings = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         {partner.amount.toLocaleString()} LKR
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        {partner.hscAmount.toLocaleString()} HSC
                       </td>
                     </tr>
                   ))}
