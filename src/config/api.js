@@ -73,6 +73,13 @@ export const adminAPI = {
   updateCommercialPartnerConfig: (configData) => api.put('/admin/commercial-partner-config', configData),
   getCommercialPartnerStats: () => api.get('/admin/commercial-partner-stats'),
   getCommercialPartners: (params) => api.get('/admin/commercial-partners', { params }),
+
+  // Newsletter management
+  getNewsletterSubscribers: (params) => api.get('/newsletter/subscribers', { params }),
+  getNewsletterStats: () => api.get('/newsletter/stats'),
+  updateSubscriberStatus: (subscriberId, status) => api.put(`/newsletter/subscribers/${subscriberId}/status`, { status }),
+  deleteSubscriber: (subscriberId) => api.delete(`/newsletter/subscribers/${subscriberId}`),
+  sendNewsletter: (data) => api.post('/newsletter/send-newsletter', data),
 };
 
 export default api;

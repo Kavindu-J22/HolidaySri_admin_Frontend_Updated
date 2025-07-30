@@ -18,7 +18,8 @@ import {
   TrendingUp,
   MapPin,
   Crown,
-  Briefcase
+  Briefcase,
+  Mail
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -90,6 +91,11 @@ const Layout = () => {
       name: 'Commercial Partner Settings',
       path: '/commercial-partner-settings',
       icon: Briefcase,
+    },
+    {
+      name: 'Newsletter Subscribers',
+      path: '/newsletter-subscribers',
+      icon: Mail,
     },
     {
       name: 'Settings',

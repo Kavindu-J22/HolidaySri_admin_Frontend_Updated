@@ -15,6 +15,7 @@ import DestinationManagement from './pages/DestinationManagement';
 import LocationManagement from './pages/LocationManagement';
 import MembershipSettings from './pages/MembershipSettings';
 import CommercialPartnerSettings from './pages/CommercialPartnerSettings';
+import NewsletterSubscribers from './pages/NewsletterSubscribers';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
                 <Route path="locations" element={<LocationManagement />} />
                 <Route path="membership-settings" element={<MembershipSettings />} />
                 <Route path="commercial-partner-settings" element={<CommercialPartnerSettings />} />
+                <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />
 
                 {/* Placeholder routes */}
                 <Route path="advertisements" element={
