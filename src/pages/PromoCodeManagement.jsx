@@ -24,28 +24,36 @@ const PromoCodeManagement = () => {
       discountRate: 0,
       earningForPurchase: 500,
       earningForMonthlyAd: 1000,
-      earningForDailyAd: 100
+      earningForDailyAd: 100,
+      earningForHourlyAd: 50,
+      earningForYearlyAd: 12000
     },
     gold: {
       price: 15000,
       discountRate: 0,
       earningForPurchase: 1000,
       earningForMonthlyAd: 2000,
-      earningForDailyAd: 200
+      earningForDailyAd: 200,
+      earningForHourlyAd: 100,
+      earningForYearlyAd: 24000
     },
     diamond: {
       price: 25000,
       discountRate: 0,
       earningForPurchase: 2000,
       earningForMonthlyAd: 3000,
-      earningForDailyAd: 300
+      earningForDailyAd: 300,
+      earningForHourlyAd: 150,
+      earningForYearlyAd: 36000
     },
     free: {
       price: 0,
       discountRate: 0,
       earningForPurchase: 0,
       earningForMonthlyAd: 50,
-      earningForDailyAd: 10
+      earningForDailyAd: 10,
+      earningForHourlyAd: 5,
+      earningForYearlyAd: 600
     },
     sellAdFee: 100, // HSC fee for selling advertisement
     accessPromoCodeViewAmount: 50, // HSC amount for accessing promo code view page
@@ -281,6 +289,36 @@ const PromoCodeManagement = () => {
                   type="number"
                   value={formData[promoType.key]?.earningForDailyAd || 0}
                   onChange={(e) => handleInputChange(promoType.key, 'earningForDailyAd', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                  min="0"
+                />
+              </div>
+
+              {/* Earning for Hourly Ad */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <Clock className="w-4 h-4 inline mr-1" />
+                  Earning for Hourly Ad (LKR for 1hour)
+                </label>
+                <input
+                  type="number"
+                  value={formData[promoType.key]?.earningForHourlyAd || 0}
+                  onChange={(e) => handleInputChange(promoType.key, 'earningForHourlyAd', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                  min="0"
+                />
+              </div>
+
+              {/* Earning for Yearly Ad */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <Calendar className="w-4 h-4 inline mr-1" />
+                  Earning for Yearly Ad (LKR)
+                </label>
+                <input
+                  type="number"
+                  value={formData[promoType.key]?.earningForYearlyAd || 0}
+                  onChange={(e) => handleInputChange(promoType.key, 'earningForYearlyAd', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                   min="0"
                 />
