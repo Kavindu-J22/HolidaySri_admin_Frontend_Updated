@@ -60,6 +60,8 @@ const PromoCodeManagement = () => {
     discounts: {
       monthlyAdDiscount: 500,
       dailyAdDiscount: 50,
+      hourlyAdDiscount: 25,
+      yearlyAdDiscount: 6000,
       purchaseDiscount: 200
     }
   });
@@ -340,7 +342,7 @@ const PromoCodeManagement = () => {
           These discount amounts apply to all promo code types when used for specific purposes.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {/* Monthly Ad Discount */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -374,6 +376,42 @@ const PromoCodeManagement = () => {
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Discount when applying promo codes to daily ads
+            </p>
+          </div>
+
+          {/* Hourly Ad Discount */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <Clock className="w-4 h-4 inline mr-1" />
+              Hourly Advertisement Discount (LKR for one hour)
+            </label>
+            <input
+              type="number"
+              value={formData.discounts?.hourlyAdDiscount || 0}
+              onChange={(e) => handleInputChange('discounts', 'hourlyAdDiscount', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+              min="0"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Discount when applying promo codes to hourly ads
+            </p>
+          </div>
+
+          {/* Yearly Ad Discount */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <Calendar className="w-4 h-4 inline mr-1" />
+              Yearly Advertisement Discount (LKR)
+            </label>
+            <input
+              type="number"
+              value={formData.discounts?.yearlyAdDiscount || 0}
+              onChange={(e) => handleInputChange('discounts', 'yearlyAdDiscount', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+              min="0"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Discount when applying promo codes to yearly ads
             </p>
           </div>
 
