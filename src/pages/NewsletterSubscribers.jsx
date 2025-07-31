@@ -644,65 +644,7 @@ const NewsletterSubscribers = () => {
                 />
               </div>
 
-              {/* Link Management */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Quick Links
-                </label>
-                <div className="space-y-3">
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={newLinkText}
-                      onChange={(e) => setNewLinkText(e.target.value)}
-                      placeholder="Link text (e.g., Visit Our Website)"
-                      className="input flex-1"
-                    />
-                    <input
-                      type="url"
-                      value={newLinkUrl}
-                      onChange={(e) => setNewLinkUrl(e.target.value)}
-                      placeholder="URL (e.g., https://holidaysri.com)"
-                      className="input flex-1"
-                    />
-                    <button
-                      type="button"
-                      onClick={addLink}
-                      className="btn-secondary flex items-center space-x-1"
-                    >
-                      <Plus className="w-4 h-4" />
-                      <span>Add</span>
-                    </button>
-                  </div>
 
-                  {emailLinks.length > 0 && (
-                    <div className="space-y-2">
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Click to insert into email body:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {emailLinks.map((link, index) => (
-                          <div key={index} className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-1">
-                            <button
-                              type="button"
-                              onClick={() => insertLinkIntoBody(link.html)}
-                              className="text-sm text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 flex items-center space-x-1"
-                            >
-                              <Link className="w-3 h-3" />
-                              <span>{link.text}</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => removeLink(index)}
-                              className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

@@ -93,7 +93,7 @@ const Dashboard = () => {
           Admin Dashboard
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mt-2">
-          Overview of your Holidaysri Tourism platform
+          Overview of your Holidaysri.com platform
         </p>
       </div>
 

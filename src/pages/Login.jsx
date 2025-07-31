@@ -60,7 +60,7 @@ const Login = () => {
             Admin Panel
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-            Holidaysri Tourism Management System
+            Holidaysri.com Management System
           </p>
         </div>
 
@@ -162,7 +162,7 @@ const Login = () => {
 
         <div className="text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            © 2024 Holidaysri Tourism. All rights reserved.
+            © 2024 Holidaysri.com. All rights reserved.
           </p>
         </div>
       </div>
