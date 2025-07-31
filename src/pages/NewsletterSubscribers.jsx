@@ -316,7 +316,9 @@ const NewsletterSubscribers = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Contacts</p>
-                <p className="text-2xl font-bold text-indigo-600">{stats.totalContacts || stats.total}</p>
+                <p className="text-2xl font-bold text-indigo-600">
+                  {activeTab === 'all' ? totalSubscribers : (stats.totalContacts || stats.total)}
+                </p>
               </div>
               <Globe className="w-8 h-8 text-indigo-600" />
             </div>
@@ -351,7 +353,7 @@ const NewsletterSubscribers = () => {
             {[
               { id: 'subscribers', name: 'Newsletter Subscribers', icon: Mail, count: stats?.total || 0 },
               { id: 'users', name: 'Registered Users', icon: Users, count: stats?.totalUsers || 0 },
-              { id: 'all', name: 'All Contacts', icon: Globe, count: stats?.totalContacts || 0 }
+              { id: 'all', name: 'All Contacts', icon: Globe, count: activeTab === 'all' ? totalSubscribers : (stats?.totalContacts || 0) }
             ].map((tab) => (
               <button
                 key={tab.id}
