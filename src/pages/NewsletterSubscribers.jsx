@@ -14,7 +14,12 @@ import {
   Square,
   Eye,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Link,
+  Plus,
+  X,
+  Globe,
+  UserPlus
 } from 'lucide-react';
 import { adminAPI } from '../config/api';
 
@@ -25,20 +30,29 @@ const NewsletterSubscribers = () => {
   const [error, setError] = useState('');
   const [selectedSubscribers, setSelectedSubscribers] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  
+
+  // Tab management
+  const [activeTab, setActiveTab] = useState('subscribers'); // 'subscribers', 'users', 'all'
+
   // Filters and search
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalSubscribers, setTotalSubscribers] = useState(0);
-  
+
   // Email sending modal
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [emailSubject, setEmailSubject] = useState('');
   const [emailBody, setEmailBody] = useState('');
   const [sendingEmail, setSendingEmail] = useState(false);
   const [sendToAll, setSendToAll] = useState(false);
+  const [recipientType, setRecipientType] = useState('selected');
+
+  // Link management
+  const [emailLinks, setEmailLinks] = useState([]);
+  const [newLinkText, setNewLinkText] = useState('');
+  const [newLinkUrl, setNewLinkUrl] = useState('');
 
   // Fetch subscribers
   const fetchSubscribers = async () => {
@@ -50,7 +64,8 @@ const NewsletterSubscribers = () => {
         search: searchTerm,
         status: statusFilter,
         sortBy: 'subscriptionDate',
-        sortOrder: 'desc'
+        sortOrder: 'desc',
+        type: activeTab
       };
 
       const response = await adminAPI.getNewsletterSubscribers(params);
@@ -79,7 +94,7 @@ const NewsletterSubscribers = () => {
 
   useEffect(() => {
     fetchSubscribers();
-  }, [currentPage, searchTerm, statusFilter]);
+  }, [currentPage, searchTerm, statusFilter, activeTab]);
 
   useEffect(() => {
     fetchStats();
@@ -95,6 +110,14 @@ const NewsletterSubscribers = () => {
   const handleStatusFilter = (status) => {
     setStatusFilter(status);
     setCurrentPage(1);
+  };
+
+  // Handle tab change
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setCurrentPage(1);
+    setSelectedSubscribers([]);
+    setSelectAll(false);
   };
 
   // Handle select all
@@ -142,6 +165,24 @@ const NewsletterSubscribers = () => {
     }
   };
 
+  // Link management functions
+  const addLink = () => {
+    if (newLinkText.trim() && newLinkUrl.trim()) {
+      const linkHtml = `<a href="${newLinkUrl}" style="color: #10b981; text-decoration: none; font-weight: bold;">${newLinkText}</a>`;
+      setEmailLinks([...emailLinks, { text: newLinkText, url: newLinkUrl, html: linkHtml }]);
+      setNewLinkText('');
+      setNewLinkUrl('');
+    }
+  };
+
+  const removeLink = (index) => {
+    setEmailLinks(emailLinks.filter((_, i) => i !== index));
+  };
+
+  const insertLinkIntoBody = (linkHtml) => {
+    setEmailBody(emailBody + ' ' + linkHtml);
+  };
+
   // Send newsletter
   const handleSendNewsletter = async () => {
     if (!emailSubject.trim() || !emailBody.trim()) {
@@ -149,8 +190,8 @@ const NewsletterSubscribers = () => {
       return;
     }
 
-    if (!sendToAll && selectedSubscribers.length === 0) {
-      setError('Please select subscribers or choose to send to all');
+    if (recipientType === 'selected' && selectedSubscribers.length === 0) {
+      setError('Please select recipients or choose a different sending option');
       return;
     }
 
@@ -159,20 +200,22 @@ const NewsletterSubscribers = () => {
       const data = {
         subject: emailSubject,
         body: emailBody,
-        sendToAll,
-        subscriberIds: sendToAll ? [] : selectedSubscribers
+        recipientType,
+        subscriberIds: recipientType === 'selected' ? selectedSubscribers : []
       };
 
       const response = await adminAPI.sendNewsletter(data);
-      
+
       setShowEmailModal(false);
       setEmailSubject('');
       setEmailBody('');
+      setEmailLinks([]);
       setSelectedSubscribers([]);
       setSelectAll(false);
-      setSendToAll(false);
-      
-      alert(`Newsletter sent successfully! ${response.data.successCount} emails sent, ${response.data.failureCount} failed.`);
+      setRecipientType('selected');
+
+      const breakdown = response.data.recipientBreakdown;
+      alert(`Newsletter sent successfully!\n\nTotal: ${response.data.totalRecipients} recipients\nSubscribers: ${breakdown.subscribers}\nUsers: ${breakdown.users}\n\nSent: ${response.data.successCount}\nFailed: ${response.data.failureCount}`);
     } catch (error) {
       console.error('Error sending newsletter:', error);
       setError('Failed to send newsletter');
@@ -248,48 +291,91 @@ const NewsletterSubscribers = () => {
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <div className="card p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Subscribers</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Newsletter Subscribers</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
               </div>
-              <Users className="w-8 h-8 text-blue-600" />
+              <Mail className="w-8 h-8 text-blue-600" />
             </div>
           </div>
-          
+
           <div className="card p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Registered Users</p>
+                <p className="text-2xl font-bold text-purple-600">{stats.totalUsers || 0}</p>
+              </div>
+              <UserPlus className="w-8 h-8 text-purple-600" />
+            </div>
+          </div>
+
+          <div className="card p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Contacts</p>
+                <p className="text-2xl font-bold text-indigo-600">{stats.totalContacts || stats.total}</p>
+              </div>
+              <Globe className="w-8 h-8 text-indigo-600" />
+            </div>
+          </div>
+
+          <div className="card p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Subscribers</p>
                 <p className="text-2xl font-bold text-green-600">{stats.active}</p>
               </div>
               <UserCheck className="w-8 h-8 text-green-600" />
             </div>
           </div>
-          
-          <div className="card p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Unsubscribed</p>
-                <p className="text-2xl font-bold text-red-600">{stats.byStatus?.unsubscribed || 0}</p>
-              </div>
-              <UserX className="w-8 h-8 text-red-600" />
-            </div>
-          </div>
-          
+
           <div className="card p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Recent (30 days)</p>
-                <p className="text-2xl font-bold text-purple-600">{stats.recent}</p>
+                <p className="text-2xl font-bold text-orange-600">{stats.recent}</p>
               </div>
-              <Calendar className="w-8 h-8 text-purple-600" />
+              <Calendar className="w-8 h-8 text-orange-600" />
             </div>
           </div>
         </div>
       )}
+
+      {/* Tabs */}
+      <div className="card">
+        <div className="border-b border-gray-200 dark:border-gray-700">
+          <nav className="flex space-x-8 px-6" aria-label="Tabs">
+            {[
+              { id: 'subscribers', name: 'Newsletter Subscribers', icon: Mail, count: stats?.total || 0 },
+              { id: 'users', name: 'Registered Users', icon: Users, count: stats?.totalUsers || 0 },
+              { id: 'all', name: 'All Contacts', icon: Globe, count: stats?.totalContacts || 0 }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
+                className={`${
+                  activeTab === tab.id
+                    ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
+              >
+                <tab.icon className="w-4 h-4" />
+                <span>{tab.name}</span>
+                <span className={`${
+                  activeTab === tab.id
+                    ? 'bg-primary-100 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400'
+                    : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
+                } ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium`}>
+                  {tab.count}
+                </span>
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
 
       {/* Filters and Search */}
       <div className="card p-6">
@@ -327,24 +413,30 @@ const NewsletterSubscribers = () => {
         </div>
       </div>
 
-      {/* Subscribers Table */}
+      {/* Contacts Table */}
       <div className="card">
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Subscribers ({totalSubscribers})
+              {activeTab === 'subscribers' ? 'Newsletter Subscribers' :
+               activeTab === 'users' ? 'Registered Users' :
+               'All Contacts'} ({totalSubscribers})
             </h3>
 
             <div className="flex items-center space-x-4">
-              <label className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                <input
-                  type="checkbox"
-                  checked={sendToAll}
-                  onChange={(e) => setSendToAll(e.target.checked)}
-                  className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                />
-                <span>Send to all active subscribers</span>
-              </label>
+              <div className="flex items-center space-x-2">
+                <label className="text-sm text-gray-600 dark:text-gray-400">Send to:</label>
+                <select
+                  value={recipientType}
+                  onChange={(e) => setRecipientType(e.target.value)}
+                  className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 bg-white dark:bg-gray-800"
+                >
+                  <option value="selected">Selected Only</option>
+                  <option value="all_subscribers">All Subscribers</option>
+                  <option value="all_users">All Users</option>
+                  <option value="all_contacts">All Contacts</option>
+                </select>
+              </div>
 
               {selectedSubscribers.length > 0 && (
                 <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -376,16 +468,19 @@ const NewsletterSubscribers = () => {
                   Email
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Type
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Subscribed
+                  Joined
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Source
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Emails Sent
+                  {activeTab === 'subscribers' ? 'Emails Sent' : 'Source'}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Actions
@@ -416,18 +511,40 @@ const NewsletterSubscribers = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      {subscriber.profileImage && (
+                        <img
+                          src={subscriber.profileImage}
+                          alt={subscriber.name}
+                          className="w-6 h-6 rounded-full mr-2"
+                        />
+                      )}
+                      <span className="text-sm text-gray-900 dark:text-white">
+                        {subscriber.name || subscriber.email.split('@')[0]}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      subscriber.type === 'subscriber' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400' :
+                      subscriber.type === 'user' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400' :
+                      'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                    }`}>
+                      {subscriber.type === 'subscriber' ? 'Newsletter' :
+                       subscriber.type === 'user' ? 'User' : 'Both'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
                     {getStatusBadge(subscriber.status)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {formatDate(subscriber.subscriptionDate)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
-                      {subscriber.source?.replace('_', ' ') || 'Unknown'}
-                    </span>
+                    {formatDate(subscriber.joinedDate || subscriber.subscriptionDate)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {subscriber.emailsSent || 0}
+                    {activeTab === 'subscribers' ?
+                      (subscriber.emailsSent || 0) :
+                      (subscriber.source?.replace('_', ' ') || 'Registered User')
+                    }
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex items-center space-x-2">
@@ -500,14 +617,18 @@ const NewsletterSubscribers = () => {
                 Send Newsletter
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {sendToAll
+                {recipientType === 'selected'
+                  ? `Sending to ${selectedSubscribers.length} selected recipients`
+                  : recipientType === 'all_subscribers'
                   ? `Sending to all ${stats?.active || 0} active subscribers`
-                  : `Sending to ${selectedSubscribers.length} selected subscribers`
+                  : recipientType === 'all_users'
+                  ? `Sending to all ${stats?.totalUsers || 0} registered users`
+                  : `Sending to all ${stats?.totalContacts || 0} contacts`
                 }
               </p>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Subject
@@ -521,6 +642,66 @@ const NewsletterSubscribers = () => {
                 />
               </div>
 
+              {/* Link Management */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Quick Links
+                </label>
+                <div className="space-y-3">
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      value={newLinkText}
+                      onChange={(e) => setNewLinkText(e.target.value)}
+                      placeholder="Link text (e.g., Visit Our Website)"
+                      className="input flex-1"
+                    />
+                    <input
+                      type="url"
+                      value={newLinkUrl}
+                      onChange={(e) => setNewLinkUrl(e.target.value)}
+                      placeholder="URL (e.g., https://holidaysri.com)"
+                      className="input flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={addLink}
+                      className="btn-secondary flex items-center space-x-1"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Add</span>
+                    </button>
+                  </div>
+
+                  {emailLinks.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Click to insert into email body:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {emailLinks.map((link, index) => (
+                          <div key={index} className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-1">
+                            <button
+                              type="button"
+                              onClick={() => insertLinkIntoBody(link.html)}
+                              className="text-sm text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 flex items-center space-x-1"
+                            >
+                              <Link className="w-3 h-3" />
+                              <span>{link.text}</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeLink(index)}
+                              className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Email Body (HTML supported)
@@ -528,10 +709,13 @@ const NewsletterSubscribers = () => {
                 <textarea
                   value={emailBody}
                   onChange={(e) => setEmailBody(e.target.value)}
-                  placeholder="Enter your email content here..."
+                  placeholder="Enter your email content here... You can use HTML tags for formatting and insert links from above."
                   rows={12}
                   className="input w-full resize-none"
                 />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  HTML tags supported: &lt;h1&gt;, &lt;h2&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;a&gt;, &lt;br&gt;, etc.
+                </p>
               </div>
             </div>
 
@@ -541,6 +725,9 @@ const NewsletterSubscribers = () => {
                   setShowEmailModal(false);
                   setEmailSubject('');
                   setEmailBody('');
+                  setEmailLinks([]);
+                  setNewLinkText('');
+                  setNewLinkUrl('');
                 }}
                 className="btn-secondary"
                 disabled={sendingEmail}
