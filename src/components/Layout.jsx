@@ -73,7 +73,7 @@ const Layout = () => {
       icon: MapPin,
     },
     {
-      name: 'Advertisements',
+      name: 'Advertisement Slot Charges',
       path: '/advertisements',
       icon: FileText,
     },

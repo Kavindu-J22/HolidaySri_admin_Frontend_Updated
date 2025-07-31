@@ -16,6 +16,7 @@ import LocationManagement from './pages/LocationManagement';
 import MembershipSettings from './pages/MembershipSettings';
 import CommercialPartnerSettings from './pages/CommercialPartnerSettings';
 import NewsletterSubscribers from './pages/NewsletterSubscribers';
+import AdvertisementSlotCharges from './pages/AdvertisementSlotCharges';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -47,14 +48,8 @@ function App() {
                 <Route path="commercial-partner-settings" element={<CommercialPartnerSettings />} />
                 <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />
 
-                {/* Placeholder routes */}
-                <Route path="advertisements" element={
-                  <div className="card p-8 text-center">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                      Advertisement Management Coming Soon
-                    </h2>
-                  </div>
-                } />
+                {/* Advertisement Management */}
+                <Route path="advertisements" element={<AdvertisementSlotCharges />} />
                 <Route path="packages" element={<HSCPackages />} />
                 <Route path="settings" element={
                   <div className="card p-8 text-center">

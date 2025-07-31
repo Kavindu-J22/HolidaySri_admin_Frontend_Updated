@@ -74,6 +74,12 @@ export const adminAPI = {
   getCommercialPartnerStats: () => api.get('/admin/commercial-partner-stats'),
   getCommercialPartners: (params) => api.get('/admin/commercial-partners', { params }),
 
+  // Advertisement Slot Charges Management
+  getAdvertisementSlotCharges: () => api.get('/admin/advertisement-slot-charges'),
+  updateAdvertisementSlotCharges: (configData) => api.put('/admin/advertisement-slot-charges', configData),
+  getAdvertisementSlotChargesStats: () => api.get('/admin/advertisement-slot-charges-stats'),
+  getSpecificSlotCharges: (category, slot) => api.get(`/admin/advertisement-slot-charges/${category}${slot ? `/${slot}` : ''}`),
+
   // Newsletter management
   getNewsletterSubscribers: (params) => api.get('/newsletter/subscribers', { params }),
   getNewsletterStats: () => api.get('/newsletter/stats'),
