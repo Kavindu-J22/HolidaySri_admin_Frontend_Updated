@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Users, 
-  Send, 
-  Search, 
-  CheckCircle, 
-  AlertCircle, 
-  Gift, 
+import {
+  Send,
+  Search,
+  CheckCircle,
+  AlertCircle,
+  Gift,
   History,
   Eye,
-  EyeOff,
   Loader,
   UserCheck,
   UserX
@@ -40,6 +38,11 @@ const TokenDistribution = () => {
     tokenType: 'all',
     status: 'all'
   });
+
+  // Distribution details modal state
+  const [selectedDistribution, setSelectedDistribution] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [detailsLoading, setDetailsLoading] = useState(false);
 
   // Success/Error states
   const [success, setSuccess] = useState(null);
@@ -86,6 +89,27 @@ const TokenDistribution = () => {
     } finally {
       setHistoryLoading(false);
     }
+  };
+
+  // Fetch distribution details
+  const fetchDistributionDetails = async (distributionId) => {
+    try {
+      setDetailsLoading(true);
+      const response = await adminAPI.getDistributionDetails(distributionId);
+      setSelectedDistribution(response.data.distribution);
+      setShowDetailsModal(true);
+    } catch (error) {
+      console.error('Failed to fetch distribution details:', error);
+      setError('Failed to load distribution details');
+    } finally {
+      setDetailsLoading(false);
+    }
+  };
+
+  // Close details modal
+  const closeDetailsModal = () => {
+    setShowDetailsModal(false);
+    setSelectedDistribution(null);
   };
 
   // Handle user selection
@@ -604,14 +628,16 @@ const TokenDistribution = () => {
                         </div>
 
                         <button
-                          onClick={() => {
-                            // You can implement a modal to show detailed view
-                            console.log('View details for:', distribution._id);
-                          }}
-                          className="ml-4 p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+                          onClick={() => fetchDistributionDetails(distribution._id)}
+                          disabled={detailsLoading}
+                          className="ml-4 p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 disabled:opacity-50"
                           title="View Details"
                         >
-                          <Eye className="w-4 h-4" />
+                          {detailsLoading ? (
+                            <Loader className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -642,6 +668,189 @@ const TokenDistribution = () => {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Distribution Details Modal */}
+      {showDetailsModal && selectedDistribution && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-4xl w-full mx-4 shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-t-2xl p-6 text-center relative">
+              <button
+                onClick={closeDetailsModal}
+                className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors p-1"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              <div className="flex items-center justify-center mb-4">
+                <span className="text-3xl mr-3">{tokenConfig[selectedDistribution.tokenType].icon}</span>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">Distribution Details</h3>
+                  <p className="text-white text-opacity-90">
+                    {selectedDistribution.amount} {selectedDistribution.tokenType} to {selectedDistribution.totalRecipients} users
+                  </p>
+                </div>
+              </div>
+
+              <div className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
+                selectedDistribution.distributionStatus === 'completed'
+                  ? 'bg-green-100 text-green-800'
+                  : selectedDistribution.distributionStatus === 'partial'
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : 'bg-red-100 text-red-800'
+              }`}>
+                {selectedDistribution.distributionStatus.toUpperCase()}
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              {/* Distribution Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Distribution Info</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Admin:</span>
+                      <span className="font-medium">{selectedDistribution.adminUsername}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Date:</span>
+                      <span className="font-medium">
+                        {new Date(selectedDistribution.createdAt).toLocaleDateString()} {new Date(selectedDistribution.createdAt).toLocaleTimeString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Token Type:</span>
+                      <span className="font-medium">{selectedDistribution.tokenType}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Amount per User:</span>
+                      <span className="font-medium">{selectedDistribution.amount}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Summary</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Total Recipients:</span>
+                      <span className="font-medium">{selectedDistribution.totalRecipients}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Successful:</span>
+                      <span className="font-medium text-green-600">{selectedDistribution.recipients.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Failed:</span>
+                      <span className="font-medium text-red-600">
+                        {selectedDistribution.failedRecipients ? selectedDistribution.failedRecipients.length : 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Total Distributed:</span>
+                      <span className="font-medium">{selectedDistribution.totalAmountDistributed} {selectedDistribution.tokenType}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Admin Message */}
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 mb-6">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.001 8.001 0 01-7.7-6M3 12c0-4.418 3.582-8 8-8s8 3.582 8 8" />
+                  </svg>
+                  Admin Message
+                </h4>
+                <p className="text-gray-700 dark:text-gray-300 italic">
+                  "{selectedDistribution.adminMessage}"
+                </p>
+              </div>
+
+              {/* Recipients List */}
+              <div className="mb-6">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <UserCheck className="w-5 h-5 mr-2 text-green-600" />
+                  Successful Recipients ({selectedDistribution.recipients.length})
+                </h4>
+                <div className="max-h-60 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg">
+                  <div className="grid grid-cols-1 divide-y divide-gray-200 dark:divide-gray-600">
+                    {selectedDistribution.recipients.map((recipient, index) => (
+                      <div key={index} className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-medium text-gray-900 dark:text-white">
+                              {recipient.userName}
+                            </div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                              {recipient.userEmail}
+                            </div>
+                          </div>
+                          <div className="text-right text-sm">
+                            <div className="text-gray-600 dark:text-gray-400">
+                              {recipient.balanceBefore} → {recipient.balanceAfter} {selectedDistribution.tokenType}
+                            </div>
+                            <div className="text-green-600 font-medium">
+                              +{selectedDistribution.amount} {selectedDistribution.tokenType}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Failed Recipients (if any) */}
+              {selectedDistribution.failedRecipients && selectedDistribution.failedRecipients.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <UserX className="w-5 h-5 mr-2 text-red-600" />
+                    Failed Recipients ({selectedDistribution.failedRecipients.length})
+                  </h4>
+                  <div className="max-h-40 overflow-y-auto border border-red-200 dark:border-red-600 rounded-lg">
+                    <div className="grid grid-cols-1 divide-y divide-red-200 dark:divide-red-600">
+                      {selectedDistribution.failedRecipients.map((failed, index) => (
+                        <div key={index} className="p-3 bg-red-50 dark:bg-red-900/20">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="font-medium text-gray-900 dark:text-white">
+                                {failed.userName || 'Unknown User'}
+                              </div>
+                              <div className="text-sm text-gray-600 dark:text-gray-400">
+                                {failed.userEmail || 'Unknown Email'}
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-sm text-red-600 font-medium">
+                                {failed.error}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Close Button */}
+              <div className="flex justify-end">
+                <button
+                  onClick={closeDetailsModal}
+                  className="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
