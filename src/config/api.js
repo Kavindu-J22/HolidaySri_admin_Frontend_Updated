@@ -86,6 +86,12 @@ export const adminAPI = {
   updateSubscriberStatus: (subscriberId, status) => api.put(`/newsletter/subscribers/${subscriberId}/status`, { status }),
   deleteSubscriber: (subscriberId) => api.delete(`/newsletter/subscribers/${subscriberId}`),
   sendNewsletter: (data) => api.post('/newsletter/send-newsletter', data),
+
+  // Token Distribution
+  getUsersForDistribution: (params) => api.get('/admin/users-for-distribution', { params }),
+  distributeTokens: (distributionData) => api.post('/admin/distribute-tokens', distributionData),
+  getDistributionHistory: (params) => api.get('/admin/distribution-history', { params }),
+  getDistributionDetails: (id) => api.get(`/admin/distribution-history/${id}`),
 };
 
 export default api;

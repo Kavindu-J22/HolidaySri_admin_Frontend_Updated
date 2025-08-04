@@ -43,6 +43,11 @@ const Layout = () => {
       icon: DollarSign,
     },
     {
+      name: 'Token Distribution',
+      path: '/token-distribution',
+      icon: Gift,
+    },
+    {
       name: 'User Management',
       path: '/users',
       icon: Users,

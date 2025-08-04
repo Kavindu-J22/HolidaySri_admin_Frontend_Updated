@@ -17,6 +17,7 @@ import MembershipSettings from './pages/MembershipSettings';
 import CommercialPartnerSettings from './pages/CommercialPartnerSettings';
 import NewsletterSubscribers from './pages/NewsletterSubscribers';
 import AdvertisementSlotCharges from './pages/AdvertisementSlotCharges';
+import TokenDistribution from './pages/TokenDistribution';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="hsc-management" element={<HSCManagement />} />
+                <Route path="token-distribution" element={<TokenDistribution />} />
                 <Route path="users" element={<UserManagement />} />
                 <Route path="promo-codes" element={<PromoCodeManagement />} />
                 <Route path="claiming-requests" element={<ClaimingRequests />} />
