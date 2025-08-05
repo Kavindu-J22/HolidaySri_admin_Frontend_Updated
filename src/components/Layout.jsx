@@ -98,7 +98,7 @@ const Layout = () => {
       icon: Briefcase,
     },
     {
-      name: 'Newsletter Subscribers',
+      name: 'Newsletter Subscribers & Email manager',
       path: '/newsletter-subscribers',
       icon: Mail,
     },

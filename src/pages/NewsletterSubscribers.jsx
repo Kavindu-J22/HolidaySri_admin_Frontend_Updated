@@ -274,7 +274,7 @@ const NewsletterSubscribers = () => {
             className="btn-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send className="w-4 h-4" />
-            <span>Send Newsletter</span>
+            <span>Send Newsletter or Mail</span>
           </button>
         </div>
       </div>
@@ -616,7 +616,7 @@ const NewsletterSubscribers = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Send Newsletter
+                Send Newsletter or Mail
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 {recipientType === 'selected'
@@ -691,7 +691,7 @@ const NewsletterSubscribers = () => {
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    <span>Send Newsletter</span>
+                    <span>Send</span>
                   </>
                 )}
               </button>
