@@ -40,10 +40,15 @@ const CustomizeTourPackageManagement = () => {
   const fetchHSCConfig = async () => {
     try {
       const response = await adminAPI.getHSCConfig();
+      console.log('Fetched HSC config:', response.data);
+
+      const charge = response.data.customizeTourPackageCharge || 100;
+      console.log('Setting charge to:', charge);
+
       setHscConfig({
-        customizeTourPackageCharge: response.data.customizeTourPackageCharge || 100
+        customizeTourPackageCharge: charge
       });
-      setNewCharge(response.data.customizeTourPackageCharge?.toString() || '100');
+      setNewCharge(charge.toString());
     } catch (error) {
       console.error('Error fetching HSC config:', error);
     }
@@ -105,7 +110,14 @@ const CustomizeTourPackageManagement = () => {
 
   const handleUpdateCharge = async () => {
     const value = parseFloat(newCharge);
-    if (!value || value <= 0) {
+
+    console.log('Attempting to update charge:', {
+      newCharge,
+      parsedValue: value,
+      isValid: !isNaN(value) && value > 0
+    });
+
+    if (isNaN(value) || value <= 0) {
       setUpdateError('Please enter a valid charge value');
       return;
     }
@@ -114,6 +126,8 @@ const CustomizeTourPackageManagement = () => {
       setUpdating(true);
       setUpdateError('');
       setUpdateSuccess(false);
+
+      console.log('Sending update request with value:', value);
 
       const response = await adminAPI.updateHSCConfig({
         customizeTourPackageCharge: value
