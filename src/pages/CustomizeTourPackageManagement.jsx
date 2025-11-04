@@ -159,7 +159,8 @@ const CustomizeTourPackageManagement = () => {
       'under-review': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
       'approved': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
       'rejected': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-      'show-partners': 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+      'show-partners': 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
+      'partner-approved': 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400'
     };
     return badges[status] || badges.pending;
   };
@@ -174,6 +175,8 @@ const CustomizeTourPackageManagement = () => {
         return <Eye className="w-4 h-4" />;
       case 'show-partners':
         return <Package className="w-4 h-4" />;
+      case 'partner-approved':
+        return <CheckCircle className="w-4 h-4" />;
       default:
         return <Clock className="w-4 h-4" />;
     }
@@ -365,6 +368,7 @@ const CustomizeTourPackageManagement = () => {
               <option value="approved">Approved</option>
               <option value="rejected">Rejected</option>
               <option value="show-partners">Show Partners</option>
+              <option value="partner-approved">Partner Approved</option>
             </select>
           </div>
         </div>
