@@ -18,6 +18,7 @@ const CustomizeTourPackageManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [adminNote, setAdminNote] = useState('');
   const [actionType, setActionType] = useState('');
   const [processing, setProcessing] = useState(false);
@@ -157,7 +158,8 @@ const CustomizeTourPackageManagement = () => {
       'pending': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
       'under-review': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
       'approved': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-      'rejected': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+      'rejected': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+      'show-partners': 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
     };
     return badges[status] || badges.pending;
   };
@@ -170,6 +172,8 @@ const CustomizeTourPackageManagement = () => {
         return <XCircle className="w-4 h-4" />;
       case 'under-review':
         return <Eye className="w-4 h-4" />;
+      case 'show-partners':
+        return <Package className="w-4 h-4" />;
       default:
         return <Clock className="w-4 h-4" />;
     }
@@ -360,6 +364,7 @@ const CustomizeTourPackageManagement = () => {
               <option value="under-review">Under Review</option>
               <option value="approved">Approved</option>
               <option value="rejected">Rejected</option>
+              <option value="show-partners">Show Partners</option>
             </select>
           </div>
         </div>
@@ -454,7 +459,17 @@ const CustomizeTourPackageManagement = () => {
                       {new Date(request.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          onClick={() => {
+                            setSelectedRequest(request);
+                            setShowDetailModal(true);
+                          }}
+                          className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300 text-sm font-medium flex items-center gap-1"
+                        >
+                          <Eye className="w-4 h-4" />
+                          View
+                        </button>
                         {request.status === 'pending' && (
                           <>
                             <button
@@ -475,6 +490,12 @@ const CustomizeTourPackageManagement = () => {
                             >
                               Reject
                             </button>
+                            <button
+                              onClick={() => openActionModal(request, 'show-partners')}
+                              className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
+                            >
+                              Show Partners
+                            </button>
                           </>
                         )}
                         {request.status === 'under-review' && (
@@ -491,6 +512,12 @@ const CustomizeTourPackageManagement = () => {
                             >
                               Reject
                             </button>
+                            <button
+                              onClick={() => openActionModal(request, 'show-partners')}
+                              className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
+                            >
+                              Show Partners
+                            </button>
                           </>
                         )}
                       </div>
@@ -503,13 +530,180 @@ const CustomizeTourPackageManagement = () => {
         </div>
       </div>
 
+      {/* Detailed View Modal */}
+      {showDetailModal && selectedRequest && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                  Request Details
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowDetailModal(false);
+                    setSelectedRequest(null);
+                  }}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                >
+                  <XCircle className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Customer Information */}
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                  <Package className="w-5 h-5 text-orange-600" />
+                  Customer Information
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Full Name:</span>
+                    <p className="text-gray-900 dark:text-white">{selectedRequest.fullName}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Email:</span>
+                    <p className="text-gray-900 dark:text-white">{selectedRequest.email}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Contact Number:</span>
+                    <p className="text-gray-900 dark:text-white">{selectedRequest.contactNumber}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Status:</span>
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadge(selectedRequest.status)}`}>
+                      {getStatusIcon(selectedRequest.status)}
+                      {selectedRequest.status.replace('-', ' ').toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Travel Details */}
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Travel Details</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Start Date:</span>
+                    <p className="text-gray-900 dark:text-white">{new Date(selectedRequest.startDate).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Number of Travelers:</span>
+                    <p className="text-gray-900 dark:text-white">{selectedRequest.numberOfTravelers}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Duration:</span>
+                    <p className="text-gray-900 dark:text-white">{selectedRequest.duration} days</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Accommodation:</span>
+                    <p className="text-gray-900 dark:text-white capitalize">
+                      {selectedRequest.accommodation === 'other'
+                        ? selectedRequest.accommodationOther
+                        : selectedRequest.accommodation.replace('-', ' ')}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">HSC Charge:</span>
+                    <p className="text-orange-600 dark:text-orange-400 font-semibold">{selectedRequest.hscCharge} HSC</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Activities */}
+              {selectedRequest.activities && selectedRequest.activities.length > 0 && (
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Activities & Interests</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedRequest.activities.map((activity, index) => (
+                      <span key={index} className="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 rounded-full text-sm">
+                        {activity}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Special Requests */}
+              {selectedRequest.specialRequests && (
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Special Requests</h4>
+                  <p className="text-gray-900 dark:text-white whitespace-pre-wrap">{selectedRequest.specialRequests}</p>
+                </div>
+              )}
+
+              {/* Admin Note */}
+              {selectedRequest.adminNote && (
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-4">
+                  <h4 className="font-semibold text-blue-900 dark:text-blue-400 mb-3 flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5" />
+                    Admin Note
+                  </h4>
+                  <p className="text-blue-900 dark:text-blue-300 whitespace-pre-wrap">{selectedRequest.adminNote}</p>
+                </div>
+              )}
+
+              {/* Processing Info */}
+              {selectedRequest.processedBy && (
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Processing Information</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Processed By:</span>
+                      <p className="text-gray-900 dark:text-white">{selectedRequest.processedBy}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Processed At:</span>
+                      <p className="text-gray-900 dark:text-white">
+                        {new Date(selectedRequest.processedAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Timestamps */}
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Submitted At:</span>
+                    <p className="text-gray-900 dark:text-white">
+                      {new Date(selectedRequest.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Last Updated:</span>
+                    <p className="text-gray-900 dark:text-white">
+                      {new Date(selectedRequest.updatedAt).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Close Button */}
+              <div className="mt-6">
+                <button
+                  onClick={() => {
+                    setShowDetailModal(false);
+                    setSelectedRequest(null);
+                  }}
+                  className="w-full px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Action Modal */}
       {showModal && selectedRequest && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                {actionType === 'approved' ? 'Approve' : actionType === 'rejected' ? 'Reject' : 'Review'} Request
+                {actionType === 'approved' ? 'Approve' : actionType === 'rejected' ? 'Reject' : actionType === 'show-partners' ? 'Show to Partners' : 'Review'} Request
               </h3>
               
               {/* Request Details */}
@@ -577,15 +771,22 @@ const CustomizeTourPackageManagement = () => {
                 <button
                   onClick={() => handleStatusChange(selectedRequest._id, actionType)}
                   className={`flex-1 px-4 py-2 rounded-lg text-white ${
-                    actionType === 'approved' 
-                      ? 'bg-green-600 hover:bg-green-700' 
+                    actionType === 'approved'
+                      ? 'bg-green-600 hover:bg-green-700'
                       : actionType === 'rejected'
                       ? 'bg-red-600 hover:bg-red-700'
+                      : actionType === 'show-partners'
+                      ? 'bg-purple-600 hover:bg-purple-700'
                       : 'bg-blue-600 hover:bg-blue-700'
                   } disabled:opacity-50`}
                   disabled={processing}
                 >
-                  {processing ? 'Processing...' : `Confirm ${actionType === 'approved' ? 'Approval' : actionType === 'rejected' ? 'Rejection' : 'Review'}`}
+                  {processing ? 'Processing...' : `Confirm ${
+                    actionType === 'approved' ? 'Approval' :
+                    actionType === 'rejected' ? 'Rejection' :
+                    actionType === 'show-partners' ? 'Show to Partners' :
+                    'Review'
+                  }`}
                 </button>
               </div>
             </div>
