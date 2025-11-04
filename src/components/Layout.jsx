@@ -98,6 +98,11 @@ const Layout = () => {
       icon: Briefcase,
     },
     {
+      name: 'Customize Tour Package',
+      path: '/customize-tour-package',
+      icon: Package,
+    },
+    {
       name: 'Newsletter Subscribers & Email manager',
       path: '/newsletter-subscribers',
       icon: Mail,

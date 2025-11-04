@@ -92,6 +92,12 @@ export const adminAPI = {
   distributeTokens: (distributionData) => api.post('/admin/distribute-tokens', distributionData),
   getDistributionHistory: (params) => api.get('/admin/distribution-history', { params }),
   getDistributionDetails: (id) => api.get(`/admin/distribution-history/${id}`),
+
+  // Customize Tour Package
+  getCustomizeTourPackageRequests: (params) => api.get('/customize-tour-package/admin/requests', { params }),
+  getCustomizeTourPackageStats: () => api.get('/customize-tour-package/admin/stats'),
+  updateCustomizeTourPackageStatus: (requestId, data) => api.put(`/customize-tour-package/admin/request/${requestId}/status`, data),
+  getCustomizeTourPackageDetails: (requestId) => api.get(`/customize-tour-package/admin/request/${requestId}`),
 };
 
 export default api;

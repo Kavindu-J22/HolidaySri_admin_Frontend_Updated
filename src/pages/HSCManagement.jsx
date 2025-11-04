@@ -9,7 +9,9 @@ const HSCManagement = () => {
     hsdValue: 1,
     currency: 'LKR',
     lastUpdated: null,
-    updatedBy: null
+    updatedBy: null,
+    sellAdFee: 100,
+    accessPromoCodeViewAmount: 50
   });
   const [newValues, setNewValues] = useState({
     hsc: '',
