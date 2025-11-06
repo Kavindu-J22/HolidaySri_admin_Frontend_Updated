@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, History } from 'lucide-react';
+import { AlertCircle, CheckCircle, History, Hotel } from 'lucide-react';
 import { adminAPI } from '../config/api';
 
 const HSCManagement = () => {
@@ -11,12 +11,14 @@ const HSCManagement = () => {
     lastUpdated: null,
     updatedBy: null,
     sellAdFee: 100,
-    accessPromoCodeViewAmount: 50
+    accessPromoCodeViewAmount: 50,
+    additionalRoomCharge: 50
   });
   const [newValues, setNewValues] = useState({
     hsc: '',
     hsg: '',
-    hsd: ''
+    hsd: '',
+    additionalRoomCharge: ''
   });
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -35,7 +37,8 @@ const HSCManagement = () => {
       setNewValues({
         hsc: response.data.hscValue.toString(),
         hsg: response.data.hsgValue?.toString() || '1',
-        hsd: response.data.hsdValue?.toString() || '1'
+        hsd: response.data.hsdValue?.toString() || '1',
+        additionalRoomCharge: response.data.additionalRoomCharge?.toString() || '50'
       });
     } catch (error) {
       setError(error.response?.data?.message || 'Failed to fetch token configuration');
@@ -73,6 +76,34 @@ const HSCManagement = () => {
       setTimeout(() => setSuccess(null), 3000);
     } catch (error) {
       setError(error.response?.data?.message || `Failed to update ${tokenType.toUpperCase()} value`);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleUpdateAdditionalRoomCharge = async () => {
+    const value = parseFloat(newValues.additionalRoomCharge);
+    if (!value || value <= 0) {
+      setError('Please enter a valid additional room charge value');
+      return;
+    }
+
+    try {
+      setUpdating(true);
+      setError(null);
+      setSuccess(null);
+
+      const response = await adminAPI.updateHSCConfig({
+        additionalRoomCharge: value
+      });
+
+      setTokenConfig(response.data.config);
+      setSuccess('Additional room charge updated successfully');
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to update additional room charge');
     } finally {
       setUpdating(false);
     }
@@ -293,6 +324,53 @@ const HSCManagement = () => {
               className="btn-primary w-full"
             >
               Update HSD
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Additional Room Charge Configuration */}
+      <div className="card p-6">
+        <div className="flex items-center mb-6">
+          <Hotel className="w-6 h-6 text-orange-600 mr-2" />
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Hotels & Accommodations - Additional Room Charge
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Set the HSC charge for adding rooms beyond the 3 free rooms
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 p-6 rounded-lg border border-orange-200 dark:border-orange-800">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Additional Room Charge (HSC)
+              </label>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                Users get 3 free rooms. This charge applies when adding 4th, 5th, 6th... rooms
+              </p>
+              <input
+                type="number"
+                step="1"
+                min="1"
+                value={newValues.additionalRoomCharge}
+                onChange={(e) => setNewValues({...newValues, additionalRoomCharge: e.target.value})}
+                className="input-field"
+                placeholder="Enter additional room charge in HSC"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                Current: <span className="font-semibold text-orange-600 dark:text-orange-400">{tokenConfig.additionalRoomCharge || 50} HSC</span>
+              </p>
+            </div>
+            <button
+              onClick={handleUpdateAdditionalRoomCharge}
+              disabled={updating || newValues.additionalRoomCharge === tokenConfig.additionalRoomCharge?.toString()}
+              className="btn-primary w-full"
+            >
+              Update Additional Room Charge
             </button>
           </div>
         </div>
