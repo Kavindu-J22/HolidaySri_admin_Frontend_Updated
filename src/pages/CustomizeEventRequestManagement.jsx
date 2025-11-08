@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Search, Filter, CheckCircle, XCircle, Clock, Eye, MessageSquare, Settings, DollarSign } from 'lucide-react';
+import { Calendar, Search, Filter, CheckCircle, XCircle, Clock, Eye, MessageSquare, Settings, DollarSign, Users } from 'lucide-react';
 import { adminAPI } from '../config/api';
 
 const CustomizeEventRequestManagement = () => {
@@ -78,15 +78,24 @@ const CustomizeEventRequestManagement = () => {
   const handleStatusChange = async (requestId, newStatus) => {
     try {
       setProcessing(true);
-      await adminAPI.updateCustomizeEventStatus(requestId, {
-        status: newStatus,
-        adminNote: adminNote
-      });
-      
+
+      // If showing to partners & members, use special endpoint
+      if (newStatus === 'show-partners-members') {
+        const response = await adminAPI.showEventToPartners(requestId, {
+          adminNote: adminNote
+        });
+        alert(`Success! ${response.data.notificationsSent} partners & members have been notified.`);
+      } else {
+        await adminAPI.updateCustomizeEventStatus(requestId, {
+          status: newStatus,
+          adminNote: adminNote
+        });
+      }
+
       setShowModal(false);
       setAdminNote('');
       setSelectedRequest(null);
-      
+
       // Refresh data
       await fetchStats();
       await fetchRequests();
@@ -453,6 +462,13 @@ const CustomizeEventRequestManagement = () => {
                                 >
                                   <XCircle className="w-4 h-4" />
                                 </button>
+                                <button
+                                  onClick={() => openActionModal(request, 'show-partners-members')}
+                                  className="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300"
+                                  title="Show to Partners & Members"
+                                >
+                                  <Users className="w-4 h-4" />
+                                </button>
                               </>
                             )}
                             {request.status === 'under-review' && (
@@ -470,6 +486,13 @@ const CustomizeEventRequestManagement = () => {
                                   title="Reject"
                                 >
                                   <XCircle className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => openActionModal(request, 'show-partners-members')}
+                                  className="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300"
+                                  title="Show to Partners & Members"
+                                >
+                                  <Users className="w-4 h-4" />
                                 </button>
                               </>
                             )}
@@ -490,7 +513,10 @@ const CustomizeEventRequestManagement = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {actionType === 'approved' ? 'Approve Request' : actionType === 'rejected' ? 'Reject Request' : 'Update Status'}
+              {actionType === 'approved' ? 'Approve Request' :
+               actionType === 'rejected' ? 'Reject Request' :
+               actionType === 'show-partners-members' ? 'Show to Partners & Members' :
+               'Update Status'}
             </h3>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

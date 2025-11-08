@@ -104,6 +104,7 @@ export const adminAPI = {
   getCustomizeEventStats: () => api.get('/customize-event-request/admin/stats'),
   updateCustomizeEventStatus: (requestId, data) => api.put(`/customize-event-request/admin/request/${requestId}/status`, data),
   getCustomizeEventDetails: (requestId) => api.get(`/customize-event-request/admin/request/${requestId}`),
+  showEventToPartners: (requestId, data) => api.put(`/customize-event-request/admin/request/${requestId}/show-partners`, data),
 };
 
 export default api;
