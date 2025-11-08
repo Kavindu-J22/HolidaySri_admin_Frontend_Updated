@@ -98,6 +98,12 @@ export const adminAPI = {
   getCustomizeTourPackageStats: () => api.get('/customize-tour-package/admin/stats'),
   updateCustomizeTourPackageStatus: (requestId, data) => api.put(`/customize-tour-package/admin/request/${requestId}/status`, data),
   getCustomizeTourPackageDetails: (requestId) => api.get(`/customize-tour-package/admin/request/${requestId}`),
+
+  // Customize Event Request
+  getCustomizeEventRequests: (params) => api.get('/customize-event-request/admin/requests', { params }),
+  getCustomizeEventStats: () => api.get('/customize-event-request/admin/stats'),
+  updateCustomizeEventStatus: (requestId, data) => api.put(`/customize-event-request/admin/request/${requestId}/status`, data),
+  getCustomizeEventDetails: (requestId) => api.get(`/customize-event-request/admin/request/${requestId}`),
 };
 
 export default api;

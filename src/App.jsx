@@ -19,6 +19,7 @@ import NewsletterSubscribers from './pages/NewsletterSubscribers';
 import AdvertisementSlotCharges from './pages/AdvertisementSlotCharges';
 import TokenDistribution from './pages/TokenDistribution';
 import CustomizeTourPackageManagement from './pages/CustomizeTourPackageManagement';
+import CustomizeEventRequestManagement from './pages/CustomizeEventRequestManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
                 <Route path="membership-settings" element={<MembershipSettings />} />
                 <Route path="commercial-partner-settings" element={<CommercialPartnerSettings />} />
                 <Route path="customize-tour-package" element={<CustomizeTourPackageManagement />} />
+                <Route path="customize-event-request" element={<CustomizeEventRequestManagement />} />
                 <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />
 
                 {/* Advertisement Management */}

@@ -12,6 +12,7 @@ import {
   Users,
   FileText,
   Package,
+  Calendar,
   Settings,
   Gift,
   CreditCard,
@@ -101,6 +102,11 @@ const Layout = () => {
       name: 'Customize Tour Package',
       path: '/customize-tour-package',
       icon: Package,
+    },
+    {
+      name: 'Customize Event Request',
+      path: '/customize-event-request',
+      icon: Calendar,
     },
     {
       name: 'Newsletter Subscribers & Email manager',
