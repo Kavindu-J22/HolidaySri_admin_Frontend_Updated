@@ -75,6 +75,11 @@ const Layout = () => {
       icon: Heart,
     },
     {
+      name: 'Paid Donation Funds',
+      path: '/paid-donation-funds',
+      icon: DollarSign,
+    },
+    {
       name: 'Destinations',
       path: '/destinations',
       icon: MapPin,

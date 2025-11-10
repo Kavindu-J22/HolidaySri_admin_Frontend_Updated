@@ -11,7 +11,8 @@ const DonationWithdrawalRequests = () => {
   const [adminNote, setAdminNote] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [actionType, setActionType] = useState(''); // approve or reject
+  const [actionType, setActionType] = useState(''); // approve, reject, or markPaid
+  const [paymentNote, setPaymentNote] = useState('');
 
   useEffect(() => {
     fetchWithdrawalRequests();
@@ -69,6 +70,45 @@ const DonationWithdrawalRequests = () => {
     } catch (error) {
       console.error('Error processing request:', error);
       alert(error.response?.data?.message || 'Failed to process request');
+    } finally {
+      setProcessing(null);
+    }
+  };
+
+  const handleMarkAsPaid = async () => {
+    if (!selectedRequest) return;
+
+    if (!window.confirm('Are you sure you want to mark this withdrawal as paid? This will:\n\n1. Send payment confirmation email to the user\n2. Create a paid fund record\n3. DELETE the campaign and advertisement permanently\n\nThis action cannot be undone!')) {
+      return;
+    }
+
+    setProcessing(selectedRequest._id);
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.post(
+        `/api/donations-raise-fund/admin/mark-as-paid/${selectedRequest._id}`,
+        {
+          paymentNote: paymentNote.trim()
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.data.success) {
+        alert(`✅ Withdrawal marked as paid successfully!\n\n${response.data.data.emailSent ? '📧 Payment confirmation email sent to user' : '⚠️ Email sending failed, but payment recorded'}\n\nCampaign and advertisement have been deleted.`);
+        setShowModal(false);
+        setPaymentNote('');
+        setSelectedRequest(null);
+        setActionType('');
+        fetchWithdrawalRequests(); // Refresh list
+      }
+    } catch (error) {
+      console.error('Error marking as paid:', error);
+      alert(error.response?.data?.message || 'Failed to mark as paid');
     } finally {
       setProcessing(null);
     }
@@ -302,6 +342,23 @@ const DonationWithdrawalRequests = () => {
                     </button>
                   </div>
                 )}
+
+                {/* Mark as Paid Button - Only for Approved Requests */}
+                {request.withdrawalRequest.status === 'approved' && (
+                  <div className="mt-4">
+                    <button
+                      onClick={() => openModal(request, 'markPaid')}
+                      disabled={processing === request._id}
+                      className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 font-semibold"
+                    >
+                      <DollarSign className="w-5 h-5" />
+                      {processing === request._id ? 'Processing...' : 'Mark as Paid & Delete'}
+                    </button>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+                      ⚠️ This will send payment email, record payment, and permanently delete the campaign & ad
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           ))
@@ -313,31 +370,71 @@ const DonationWithdrawalRequests = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              {actionType === 'approved' ? 'Approve' : 'Reject'} Withdrawal Request
+              {actionType === 'markPaid' ? 'Mark as Paid' : actionType === 'approved' ? 'Approve' : 'Reject'} Withdrawal Request
             </h3>
-            
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              Are you sure you want to {actionType === 'approved' ? 'approve' : 'reject'} the withdrawal request for <strong>{selectedRequest.title}</strong>?
-            </p>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Admin Note {actionType === 'rejected' && '(Required for rejection)'}
-              </label>
-              <textarea
-                value={adminNote}
-                onChange={(e) => setAdminNote(e.target.value)}
-                rows="3"
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                placeholder="Add a note for the campaign owner..."
-              ></textarea>
-            </div>
+            {actionType === 'markPaid' ? (
+              <>
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4">
+                  <p className="text-yellow-800 dark:text-yellow-200 font-semibold mb-2">⚠️ Warning: This action cannot be undone!</p>
+                  <p className="text-yellow-700 dark:text-yellow-300 text-sm">
+                    Marking as paid will:
+                  </p>
+                  <ul className="list-disc list-inside text-yellow-700 dark:text-yellow-300 text-sm mt-2 space-y-1">
+                    <li>Send payment confirmation email to the user</li>
+                    <li>Create a permanent paid fund record</li>
+                    <li>Permanently DELETE the campaign</li>
+                    <li>Permanently DELETE the advertisement slot</li>
+                  </ul>
+                </div>
+
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-4">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Payment Summary</h4>
+                  <p className="text-sm text-gray-700 dark:text-gray-300"><strong>Campaign:</strong> {selectedRequest.title}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300"><strong>Amount:</strong> {selectedRequest.totalDonatedHSC.toFixed(2)} HSC ({selectedRequest.totalDonatedLKR.toLocaleString()} LKR)</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300"><strong>Organizer:</strong> {selectedRequest.organizer}</p>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Payment Note (Optional)
+                  </label>
+                  <textarea
+                    value={paymentNote}
+                    onChange={(e) => setPaymentNote(e.target.value)}
+                    rows="3"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                    placeholder="Add internal payment notes (e.g., transaction reference, payment method)..."
+                  ></textarea>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-gray-700 dark:text-gray-300 mb-4">
+                  Are you sure you want to {actionType === 'approved' ? 'approve' : 'reject'} the withdrawal request for <strong>{selectedRequest.title}</strong>?
+                </p>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Admin Note {actionType === 'rejected' && '(Required for rejection)'}
+                  </label>
+                  <textarea
+                    value={adminNote}
+                    onChange={(e) => setAdminNote(e.target.value)}
+                    rows="3"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                    placeholder="Add a note for the campaign owner..."
+                  ></textarea>
+                </div>
+              </>
+            )}
 
             <div className="flex gap-3">
               <button
                 onClick={() => {
                   setShowModal(false);
                   setAdminNote('');
+                  setPaymentNote('');
                   setSelectedRequest(null);
                   setActionType('');
                 }}
@@ -347,13 +444,16 @@ const DonationWithdrawalRequests = () => {
                 Cancel
               </button>
               <button
-                onClick={handleProcessRequest}
+                onClick={actionType === 'markPaid' ? handleMarkAsPaid : handleProcessRequest}
                 disabled={processing || (actionType === 'rejected' && !adminNote.trim())}
                 className={`flex-1 px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 ${
+                  actionType === 'markPaid' ? 'bg-blue-600 hover:bg-blue-700' :
                   actionType === 'approved' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
                 }`}
               >
-                {processing ? 'Processing...' : `Confirm ${actionType === 'approved' ? 'Approval' : 'Rejection'}`}
+                {processing ? 'Processing...' :
+                  actionType === 'markPaid' ? 'Confirm Payment & Delete' :
+                  `Confirm ${actionType === 'approved' ? 'Approval' : 'Rejection'}`}
               </button>
             </div>
           </div>
