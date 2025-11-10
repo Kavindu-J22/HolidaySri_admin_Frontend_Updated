@@ -20,7 +20,8 @@ import {
   MapPin,
   Crown,
   Briefcase,
-  Mail
+  Mail,
+  Heart
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -67,6 +68,11 @@ const Layout = () => {
       name: 'HSC Earned Claims',
       path: '/hsc-earned-claims',
       icon: TrendingUp,
+    },
+    {
+      name: 'Donation Withdrawals',
+      path: '/donation-withdrawals',
+      icon: Heart,
     },
     {
       name: 'Destinations',

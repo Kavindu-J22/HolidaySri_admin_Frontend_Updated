@@ -20,6 +20,7 @@ import AdvertisementSlotCharges from './pages/AdvertisementSlotCharges';
 import TokenDistribution from './pages/TokenDistribution';
 import CustomizeTourPackageManagement from './pages/CustomizeTourPackageManagement';
 import CustomizeEventRequestManagement from './pages/CustomizeEventRequestManagement';
+import DonationWithdrawalRequests from './pages/DonationWithdrawalRequests';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
                 <Route path="promo-codes" element={<PromoCodeManagement />} />
                 <Route path="claiming-requests" element={<ClaimingRequests />} />
                 <Route path="hsc-earned-claims" element={<HSCEarnedClaims />} />
+                <Route path="donation-withdrawals" element={<DonationWithdrawalRequests />} />
                 <Route path="destinations" element={<DestinationManagement />} />
                 <Route path="locations" element={<LocationManagement />} />
                 <Route path="membership-settings" element={<MembershipSettings />} />
