@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, History, Hotel } from 'lucide-react';
+import { AlertCircle, CheckCircle, History, Hotel, Users } from 'lucide-react';
 import { adminAPI } from '../config/api';
 
 const HSCManagement = () => {
@@ -12,13 +12,15 @@ const HSCManagement = () => {
     updatedBy: null,
     sellAdFee: 100,
     accessPromoCodeViewAmount: 50,
-    additionalRoomCharge: 50
+    additionalRoomCharge: 50,
+    travelBuddyTripRequestCharge: 50
   });
   const [newValues, setNewValues] = useState({
     hsc: '',
     hsg: '',
     hsd: '',
-    additionalRoomCharge: ''
+    additionalRoomCharge: '',
+    travelBuddyTripRequestCharge: ''
   });
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -38,7 +40,8 @@ const HSCManagement = () => {
         hsc: response.data.hscValue.toString(),
         hsg: response.data.hsgValue?.toString() || '1',
         hsd: response.data.hsdValue?.toString() || '1',
-        additionalRoomCharge: response.data.additionalRoomCharge?.toString() || '50'
+        additionalRoomCharge: response.data.additionalRoomCharge?.toString() || '50',
+        travelBuddyTripRequestCharge: response.data.travelBuddyTripRequestCharge?.toString() || '50'
       });
     } catch (error) {
       setError(error.response?.data?.message || 'Failed to fetch token configuration');
@@ -98,12 +101,42 @@ const HSCManagement = () => {
       });
 
       setTokenConfig(response.data.config);
+      setNewValues({...newValues, additionalRoomCharge: ''});
       setSuccess('Additional room charge updated successfully');
 
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(null), 3000);
     } catch (error) {
       setError(error.response?.data?.message || 'Failed to update additional room charge');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleUpdateTravelBuddyTripRequestCharge = async () => {
+    const value = parseFloat(newValues.travelBuddyTripRequestCharge);
+    if (!value || value <= 0) {
+      setError('Please enter a valid travel buddy trip request charge value');
+      return;
+    }
+
+    try {
+      setUpdating(true);
+      setError(null);
+      setSuccess(null);
+
+      const response = await adminAPI.updateHSCConfig({
+        travelBuddyTripRequestCharge: value
+      });
+
+      setTokenConfig(response.data.config);
+      setNewValues({...newValues, travelBuddyTripRequestCharge: ''});
+      setSuccess('Travel Buddy Trip Request Charge updated successfully');
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to update travel buddy trip request charge');
     } finally {
       setUpdating(false);
     }
@@ -371,6 +404,39 @@ const HSCManagement = () => {
               className="btn-primary w-full"
             >
               Update Additional Room Charge
+            </button>
+          </div>
+        </div>
+
+        {/* Travel Buddy Trip Request Charge */}
+        <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 p-6 rounded-lg border border-teal-200 dark:border-teal-800">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Travel Buddy's Trip Request Charge (HSC)
+              </label>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                Charge for submitting a travel buddy trip request on the platform
+              </p>
+              <input
+                type="number"
+                step="1"
+                min="1"
+                value={newValues.travelBuddyTripRequestCharge}
+                onChange={(e) => setNewValues({...newValues, travelBuddyTripRequestCharge: e.target.value})}
+                className="input-field"
+                placeholder="Enter trip request charge in HSC"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                Current: <span className="font-semibold text-teal-600 dark:text-teal-400">{tokenConfig.travelBuddyTripRequestCharge || 50} HSC</span>
+              </p>
+            </div>
+            <button
+              onClick={handleUpdateTravelBuddyTripRequestCharge}
+              disabled={updating || newValues.travelBuddyTripRequestCharge === tokenConfig.travelBuddyTripRequestCharge?.toString()}
+              className="btn-primary w-full"
+            >
+              Update Trip Request Charge
             </button>
           </div>
         </div>
