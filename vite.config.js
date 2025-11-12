@@ -8,7 +8,7 @@ export default defineConfig({
     port: 3001,
     proxy: {
       "/api": {
-        target: "https://holidaysri-backend-9xm4.onrender.com",
+        target: "http://localhost:5000",
         changeOrigin: true,
         secure: false,
       },
