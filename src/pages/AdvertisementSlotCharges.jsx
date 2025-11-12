@@ -131,7 +131,7 @@ const AdvertisementSlotCharges = () => {
       description: 'Job opportunities, crypto, promotions, and special offers',
       slots: {
         jobOpportunities: 'Exciting Job Opportunities',
-        cryptoConsultingSignals: 'Crypto Consulting & Signals',
+        cryptoConsultingSignals: 'Crypto Consulting & Courses',
         localSimMobileData: 'Local SIM Cards & Mobile Data Plans',
         customAdsCampaigns: 'Custom Ads Campaigns',
         exclusiveOffersPromotions: 'Exclusive Offers & Promotions'
