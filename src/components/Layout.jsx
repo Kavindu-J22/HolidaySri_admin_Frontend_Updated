@@ -26,7 +26,8 @@ import {
   Wallet,
   Database,
   ArrowLeftRight,
-  Receipt
+  Receipt,
+  Bed
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -158,6 +159,11 @@ const Layout = () => {
       name: 'All Payment Activities & Company Profit',
       path: '/payment-activities',
       icon: Receipt,
+    },
+    {
+      name: 'Users Room Bookings',
+      path: '/room-bookings',
+      icon: Bed,
     }
   ];
 
