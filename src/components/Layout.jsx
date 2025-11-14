@@ -60,12 +60,12 @@ const Layout = () => {
       icon: Users,
     },
     {
-      name: 'Promo Codes',
+      name: 'Promo Codes Configurations',
       path: '/promo-codes',
       icon: Gift,
     },
     {
-      name: 'Agents Management',
+      name: 'Agents & PromoCodes Management',
       path: '/agents',
       icon: UserCheck,
     },
