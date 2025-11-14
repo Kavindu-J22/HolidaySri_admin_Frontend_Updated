@@ -70,6 +70,11 @@ const Layout = () => {
       icon: UserCheck,
     },
     {
+      name: 'PromoCodes Transaction Records',
+      path: '/promo-code-transactions',
+      icon: Receipt,
+    },
+    {
       name: 'Claiming Requests',
       path: '/claiming-requests',
       icon: CreditCard,
