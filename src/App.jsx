@@ -23,6 +23,7 @@ import CustomizeTourPackageManagement from './pages/CustomizeTourPackageManageme
 import CustomizeEventRequestManagement from './pages/CustomizeEventRequestManagement';
 import DonationWithdrawalRequests from './pages/DonationWithdrawalRequests';
 import PaidDonationFunds from './pages/PaidDonationFunds';
+import AllEarnings from './pages/AllEarnings';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
                 <Route path="customize-tour-package" element={<CustomizeTourPackageManagement />} />
                 <Route path="customize-event-request" element={<CustomizeEventRequestManagement />} />
                 <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />
+                <Route path="all-earnings" element={<AllEarnings />} />
 
                 {/* Advertisement Management */}
                 <Route path="advertisements" element={<AdvertisementSlotCharges />} />

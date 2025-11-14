@@ -71,6 +71,9 @@ export const adminAPI = {
     api.post(`/admin/hsc-earned-claims/${requestId}/approve`, { adminNote }),
   getHSCEarnedClaimStats: () => api.get("/admin/hsc-earned-claims/stats"),
 
+  // Earnings management
+  getAllEarnings: (params) => api.get("/admin/earnings", { params }),
+
   // Membership endpoints
   getMembershipTest: () => api.get("/admin/membership-test"),
   getMembershipConfig: () => api.get("/admin/membership-config"),

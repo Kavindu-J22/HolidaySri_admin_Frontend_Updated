@@ -22,7 +22,8 @@ import {
   Briefcase,
   Mail,
   Heart,
-  UserCheck
+  UserCheck,
+  Wallet
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -129,6 +130,11 @@ const Layout = () => {
       name: 'Newsletter Subscribers & Email manager',
       path: '/newsletter-subscribers',
       icon: Mail,
+    },
+    {
+      name: 'All Users Earnings',
+      path: '/all-earnings',
+      icon: Wallet,
     },
     {
       name: 'Settings',
