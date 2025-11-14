@@ -77,6 +77,9 @@ export const adminAPI = {
   // Earnings management
   getAllEarnings: (params) => api.get("/admin/earnings", { params }),
 
+  // HSC Transactions management
+  getHSCTransactions: (params) => api.get("/admin/hsc-transactions", { params }),
+
   // Membership endpoints
   getMembershipTest: () => api.get("/admin/membership-test"),
   getMembershipConfig: () => api.get("/admin/membership-config"),

@@ -25,6 +25,7 @@ import CustomizeEventRequestManagement from './pages/CustomizeEventRequestManage
 import DonationWithdrawalRequests from './pages/DonationWithdrawalRequests';
 import PaidDonationFunds from './pages/PaidDonationFunds';
 import AllEarnings from './pages/AllEarnings';
+import UsersTransactionRecords from './pages/UsersTransactionRecords';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
                 <Route path="customize-event-request" element={<CustomizeEventRequestManagement />} />
                 <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />
                 <Route path="all-earnings" element={<AllEarnings />} />
+                <Route path="users-transaction-records" element={<UsersTransactionRecords />} />
 
                 {/* Advertisement Management */}
                 <Route path="advertisements" element={<AdvertisementSlotCharges />} />

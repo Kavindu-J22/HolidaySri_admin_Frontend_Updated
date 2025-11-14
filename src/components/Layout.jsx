@@ -24,7 +24,8 @@ import {
   Heart,
   UserCheck,
   Wallet,
-  Database
+  Database,
+  ArrowLeftRight
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -141,6 +142,11 @@ const Layout = () => {
       name: 'All Users Earnings',
       path: '/all-earnings',
       icon: Wallet,
+    },
+    {
+      name: 'Users Transaction Records',
+      path: '/users-transaction-records',
+      icon: ArrowLeftRight,
     },
     {
       name: 'Settings',
