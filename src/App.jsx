@@ -9,6 +9,7 @@ import HSCManagement from './pages/HSCManagement';
 import UserManagement from './pages/UserManagement';
 import HSCPackages from './pages/HSCPackages';
 import PromoCodeManagement from './pages/PromoCodeManagement';
+import AgentManagement from './pages/AgentManagement';
 import ClaimingRequests from './pages/ClaimingRequests';
 import HSCEarnedClaims from './pages/HSCEarnedClaims';
 import DestinationManagement from './pages/DestinationManagement';
@@ -46,6 +47,7 @@ function App() {
                 <Route path="token-distribution" element={<TokenDistribution />} />
                 <Route path="users" element={<UserManagement />} />
                 <Route path="promo-codes" element={<PromoCodeManagement />} />
+                <Route path="agents" element={<AgentManagement />} />
                 <Route path="claiming-requests" element={<ClaimingRequests />} />
                 <Route path="hsc-earned-claims" element={<HSCEarnedClaims />} />
                 <Route path="donation-withdrawals" element={<DonationWithdrawalRequests />} />

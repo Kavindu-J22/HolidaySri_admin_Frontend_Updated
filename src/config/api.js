@@ -142,6 +142,12 @@ export const adminAPI = {
       `/customize-event-request/admin/request/${requestId}/show-partners`,
       data
     ),
+
+  // Agents Management
+  getAgents: (params) => api.get("/admin/agents", { params }),
+  getAgentDetails: (agentId) => api.get(`/admin/agents/${agentId}`),
+  updateAgentStatus: (agentId, isActive) =>
+    api.put(`/admin/agents/${agentId}/status`, { isActive }),
 };
 
 export default api;

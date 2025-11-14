@@ -21,7 +21,8 @@ import {
   Crown,
   Briefcase,
   Mail,
-  Heart
+  Heart,
+  UserCheck
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -58,6 +59,11 @@ const Layout = () => {
       name: 'Promo Codes',
       path: '/promo-codes',
       icon: Gift,
+    },
+    {
+      name: 'Agents',
+      path: '/agents',
+      icon: UserCheck,
     },
     {
       name: 'Claiming Requests',
