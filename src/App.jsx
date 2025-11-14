@@ -12,6 +12,7 @@ import PromoCodeManagement from './pages/PromoCodeManagement';
 import AgentManagement from './pages/AgentManagement';
 import ClaimingRequests from './pages/ClaimingRequests';
 import HSCEarnedClaims from './pages/HSCEarnedClaims';
+import AllHSCEarnedRecords from './pages/AllHSCEarnedRecords';
 import DestinationManagement from './pages/DestinationManagement';
 import LocationManagement from './pages/LocationManagement';
 import MembershipSettings from './pages/MembershipSettings';
@@ -51,6 +52,7 @@ function App() {
                 <Route path="agents" element={<AgentManagement />} />
                 <Route path="claiming-requests" element={<ClaimingRequests />} />
                 <Route path="hsc-earned-claims" element={<HSCEarnedClaims />} />
+                <Route path="all-hsc-earned-records" element={<AllHSCEarnedRecords />} />
                 <Route path="donation-withdrawals" element={<DonationWithdrawalRequests />} />
                 <Route path="paid-donation-funds" element={<PaidDonationFunds />} />
                 <Route path="destinations" element={<DestinationManagement />} />

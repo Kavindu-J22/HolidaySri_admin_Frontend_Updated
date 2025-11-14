@@ -106,10 +106,10 @@ const AllEarnings = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            All Earnings
+            All Users Earnings
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            View and manage all earnings from promo code usage
+            View and manage all Users earnings from promo code usage
           </p>
         </div>
       </div>

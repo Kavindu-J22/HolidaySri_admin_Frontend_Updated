@@ -23,7 +23,8 @@ import {
   Mail,
   Heart,
   UserCheck,
-  Wallet
+  Wallet,
+  Database
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -75,6 +76,11 @@ const Layout = () => {
       name: 'HSC Earned Claims',
       path: '/hsc-earned-claims',
       icon: TrendingUp,
+    },
+    {
+      name: 'All Users HSC Earn Records',
+      path: '/all-hsc-earned-records',
+      icon: Database,
     },
     {
       name: 'Donation Withdrawals',
