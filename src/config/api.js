@@ -157,6 +157,10 @@ export const adminAPI = {
   getAgentDetails: (agentId) => api.get(`/admin/agents/${agentId}`),
   updateAgentStatus: (agentId, isActive) =>
     api.put(`/admin/agents/${agentId}/status`, { isActive }),
+
+  // Payment Activities Management
+  getPaymentActivities: (params) => api.get("/admin/payment-activities", { params }),
+  getPaymentActivityDetails: (activityId) => api.get(`/admin/payment-activities/${activityId}`),
 };
 
 export default api;

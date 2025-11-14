@@ -25,7 +25,8 @@ import {
   UserCheck,
   Wallet,
   Database,
-  ArrowLeftRight
+  ArrowLeftRight,
+  Receipt
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -64,7 +65,7 @@ const Layout = () => {
       icon: Gift,
     },
     {
-      name: 'Agents',
+      name: 'Agents Management',
       path: '/agents',
       icon: UserCheck,
     },
@@ -149,10 +150,10 @@ const Layout = () => {
       icon: ArrowLeftRight,
     },
     {
-      name: 'Settings',
-      path: '/settings',
-      icon: Settings,
-    },
+      name: 'All Payment Activities & Company Profit',
+      path: '/payment-activities',
+      icon: Receipt,
+    }
   ];
 
   const handleLogout = async () => {

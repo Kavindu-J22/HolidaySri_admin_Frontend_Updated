@@ -26,6 +26,7 @@ import DonationWithdrawalRequests from './pages/DonationWithdrawalRequests';
 import PaidDonationFunds from './pages/PaidDonationFunds';
 import AllEarnings from './pages/AllEarnings';
 import UsersTransactionRecords from './pages/UsersTransactionRecords';
+import AllPaymentActivities from './pages/AllPaymentActivities';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
                 <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />
                 <Route path="all-earnings" element={<AllEarnings />} />
                 <Route path="users-transaction-records" element={<UsersTransactionRecords />} />
+                <Route path="payment-activities" element={<AllPaymentActivities />} />
 
                 {/* Advertisement Management */}
                 <Route path="advertisements" element={<AdvertisementSlotCharges />} />
