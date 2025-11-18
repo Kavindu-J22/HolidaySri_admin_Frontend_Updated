@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Upload, X, Plus, Trash2 } from 'lucide-react';
+import { API_BASE_URL } from '../../config/api';
 
 const LocationForm = ({ location, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -60,7 +61,7 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
 
   const fetchConstants = async () => {
     try {
-      const response = await fetch('/api/locations/constants');
+      const response = await fetch(`${API_BASE_URL}/locations/constants`);
       if (response.ok) {
         const data = await response.json();
         setLocationTypes(data.locationTypes);
@@ -75,7 +76,7 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
   const fetchDestinations = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/destinations?limit=100', {
+      const response = await fetch(`${API_BASE_URL}/destinations?limit=100`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

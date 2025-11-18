@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, Search, Filter, MapPin, Star, Eye } from 'lucide-re
 import LocationForm from '../components/locations/LocationForm';
 import LocationCard from '../components/locations/LocationCard';
 import ConfirmDialog from '../components/common/ConfirmDialog';
+import { API_BASE_URL } from '../config/api';
 
 const LocationManagement = () => {
   const [locations, setLocations] = useState([]);
@@ -32,7 +33,7 @@ const LocationManagement = () => {
 
   const fetchConstants = async () => {
     try {
-      const response = await fetch('/api/locations/constants');
+      const response = await fetch(`${API_BASE_URL}/locations/constants`);
       if (response.ok) {
         const data = await response.json();
         setLocationTypes(data.locationTypes);
@@ -56,7 +57,7 @@ const LocationManagement = () => {
       if (filterClimate) params.append('climate', filterClimate);
 
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/locations?${params}`, {
+      const response = await fetch(`${API_BASE_URL}/locations?${params}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -101,7 +102,7 @@ const LocationManagement = () => {
   const handleDeleteLocation = async (locationId) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/locations/${locationId}`, {
+      const response = await fetch(`${API_BASE_URL}/locations/${locationId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -120,10 +121,10 @@ const LocationManagement = () => {
   const handleFormSubmit = async (formData) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const url = editingLocation 
-        ? `/api/locations/${editingLocation._id}`
-        : '/api/locations';
-      
+      const url = editingLocation
+        ? `${API_BASE_URL}/locations/${editingLocation._id}`
+        : `${API_BASE_URL}/locations`;
+
       const method = editingLocation ? 'PUT' : 'POST';
 
       const response = await fetch(url, {

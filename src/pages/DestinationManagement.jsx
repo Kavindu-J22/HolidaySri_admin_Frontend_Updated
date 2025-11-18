@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, Search, Filter, MapPin, Star, Eye } from 'lucide-re
 import DestinationForm from '../components/destinations/DestinationForm';
 import DestinationCard from '../components/destinations/DestinationCard';
 import ConfirmDialog from '../components/common/ConfirmDialog';
+import { API_BASE_URL } from '../config/api';
 
 const DestinationManagement = () => {
   const [destinations, setDestinations] = useState([]);
@@ -53,7 +54,7 @@ const DestinationManagement = () => {
       if (filterType) params.append('type', filterType);
       if (filterClimate) params.append('climate', filterClimate);
 
-      const response = await fetch(`/api/destinations?${params}`, {
+      const response = await fetch(`${API_BASE_URL}/destinations?${params}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -98,7 +99,7 @@ const DestinationManagement = () => {
   const handleDeleteDestination = async (destinationId) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/destinations/${destinationId}`, {
+      const response = await fetch(`${API_BASE_URL}/destinations/${destinationId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -117,10 +118,10 @@ const DestinationManagement = () => {
   const handleFormSubmit = async (formData) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const url = editingDestination 
-        ? `/api/destinations/${editingDestination._id}`
-        : '/api/destinations';
-      
+      const url = editingDestination
+        ? `${API_BASE_URL}/destinations/${editingDestination._id}`
+        : `${API_BASE_URL}/destinations`;
+
       const method = editingDestination ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
