@@ -23,6 +23,7 @@ import AdvertisementSlotCharges from './pages/AdvertisementSlotCharges';
 import TokenDistribution from './pages/TokenDistribution';
 import CustomizeTourPackageManagement from './pages/CustomizeTourPackageManagement';
 import CustomizeEventRequestManagement from './pages/CustomizeEventRequestManagement';
+import AdvertisementsManagement from './pages/AdvertisementsManagement';
 import DonationWithdrawalRequests from './pages/DonationWithdrawalRequests';
 import PaidDonationFunds from './pages/PaidDonationFunds';
 import AllEarnings from './pages/AllEarnings';
@@ -52,6 +53,7 @@ function App() {
                 <Route path="hsc-management" element={<HSCManagement />} />
                 <Route path="token-distribution" element={<TokenDistribution />} />
                 <Route path="users" element={<UserManagement />} />
+                <Route path="advertisements-management" element={<AdvertisementsManagement />} />
                 <Route path="promo-codes" element={<PromoCodeManagement />} />
                 <Route path="agents" element={<AgentManagement />} />
                 <Route path="promo-code-transactions" element={<PromoCodeTransactions />} />

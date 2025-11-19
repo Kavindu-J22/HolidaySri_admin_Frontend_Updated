@@ -27,7 +27,8 @@ import {
   Database,
   ArrowLeftRight,
   Receipt,
-  Bed
+  Bed,
+  Megaphone
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -59,6 +60,11 @@ const Layout = () => {
       name: 'User Management',
       path: '/users',
       icon: Users,
+    },
+    {
+      name: 'Advertisements Management',
+      path: '/advertisements-management',
+      icon: Megaphone,
     },
     {
       name: 'Promo Codes Configurations',

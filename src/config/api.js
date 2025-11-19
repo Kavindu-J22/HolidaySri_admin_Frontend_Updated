@@ -167,6 +167,13 @@ export const adminAPI = {
   // Room Bookings Management
   getRoomBookings: (params) => api.get("/admin/room-bookings", { params }),
   getRoomBookingDetails: (bookingId) => api.get(`/admin/room-bookings/${bookingId}`),
+
+  // Advertisements Management
+  getAdvertisements: (params) => api.get("/admin/advertisements", { params }),
+  getAdvertisementDetails: (adId) => api.get(`/admin/advertisements/${adId}`),
+  toggleAdvertisementActive: (adId) => api.put(`/admin/advertisements/${adId}/toggle-active`),
+  deleteAdvertisement: (adId, slotId, adminNote) =>
+    api.delete(`/admin/advertisements/${adId}`, { data: { slotId, adminNote } }),
 };
 
 export default api;
