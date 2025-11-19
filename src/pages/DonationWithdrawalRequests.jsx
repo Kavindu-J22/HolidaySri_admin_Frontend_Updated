@@ -22,7 +22,7 @@ const DonationWithdrawalRequests = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await axios.get('/api/donations-raise-fund/admin/withdrawal-requests', {
+      const response = await axios.get('https://holidaysri-backend-9xm4.onrender.com/api/donations-raise-fund/admin/withdrawal-requests', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -47,7 +47,7 @@ const DonationWithdrawalRequests = () => {
     try {
       const token = localStorage.getItem('adminToken');
       const response = await axios.put(
-        `/api/donations-raise-fund/admin/withdrawal-requests/${selectedRequest._id}`,
+        `https://holidaysri-backend-9xm4.onrender.com/api/donations-raise-fund/admin/withdrawal-requests/${selectedRequest._id}`,
         {
           status: actionType,
           adminNote: adminNote.trim()
@@ -87,7 +87,7 @@ const DonationWithdrawalRequests = () => {
     try {
       const token = localStorage.getItem('adminToken');
       const response = await axios.post(
-        `/api/donations-raise-fund/admin/mark-as-paid/${selectedRequest._id}`,
+        `https://holidaysri-backend-9xm4.onrender.com/api/donations-raise-fund/admin/mark-as-paid/${selectedRequest._id}`,
         {
           paymentNote: paymentNote.trim()
         },
