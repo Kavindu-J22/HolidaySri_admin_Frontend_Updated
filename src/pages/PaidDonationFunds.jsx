@@ -15,7 +15,7 @@ const PaidDonationFunds = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await axios.get('http://localhost:5000/api/donations-raise-fund/admin/paid-funds', {
+      const response = await axios.get('https://holidaysri-backend-9xm4.onrender.com/api/donations-raise-fund/admin/paid-funds', {
         headers: {
           Authorization: `Bearer ${token}`
         }
