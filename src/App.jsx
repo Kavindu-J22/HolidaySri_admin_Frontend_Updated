@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
+import ScrollToTop from './components/ScrollToTop';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import HSCManagement from './pages/HSCManagement';
@@ -37,6 +38,7 @@ function App() {
     <ThemeProvider>
       <AdminAuthProvider>
         <Router>
+          <ScrollToTop />
           <div className="App">
             <Routes>
               {/* Auth routes */}
