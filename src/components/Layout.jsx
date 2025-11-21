@@ -28,7 +28,8 @@ import {
   ArrowLeftRight,
   Receipt,
   Bed,
-  Megaphone
+  Megaphone,
+  Banknote
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -170,6 +171,11 @@ const Layout = () => {
       name: 'Users Room Bookings',
       path: '/room-bookings',
       icon: Bed,
+    },
+    {
+      name: 'Money Transactions',
+      path: '/money-transactions',
+      icon: Banknote,
     }
   ];
 

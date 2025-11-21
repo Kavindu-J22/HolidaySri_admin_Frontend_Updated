@@ -174,6 +174,15 @@ export const adminAPI = {
   toggleAdvertisementActive: (adId) => api.put(`/admin/advertisements/${adId}/toggle-active`),
   deleteAdvertisement: (adId, slotId, adminNote) =>
     api.delete(`/admin/advertisements/${adId}`, { data: { slotId, adminNote } }),
+
+  // Company Finance Management
+  getFinancialSummary: (params) => api.get("/company-finance/summary", { params }),
+  getEarnings: (params) => api.get("/company-finance/earnings", { params }),
+  getExpenses: (params) => api.get("/company-finance/expenses", { params }),
+  createExpense: (data) => api.post("/company-finance/expenses", data),
+  updateExpense: (id, data) => api.put(`/company-finance/expenses/${id}`, data),
+  deleteExpense: (id) => api.delete(`/company-finance/expenses/${id}`),
+  getExpenseDetails: (id) => api.get(`/company-finance/expenses/${id}`),
 };
 
 export default api;

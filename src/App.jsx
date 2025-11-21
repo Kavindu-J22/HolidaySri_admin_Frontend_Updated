@@ -31,6 +31,7 @@ import AllEarnings from './pages/AllEarnings';
 import UsersTransactionRecords from './pages/UsersTransactionRecords';
 import AllPaymentActivities from './pages/AllPaymentActivities';
 import UsersRoomBookings from './pages/UsersRoomBookings';
+import MoneyTransactions from './pages/MoneyTransactions';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -75,6 +76,7 @@ function App() {
                 <Route path="users-transaction-records" element={<UsersTransactionRecords />} />
                 <Route path="payment-activities" element={<AllPaymentActivities />} />
                 <Route path="room-bookings" element={<UsersRoomBookings />} />
+                <Route path="money-transactions" element={<MoneyTransactions />} />
 
                 {/* Advertisement Management */}
                 <Route path="advertisements" element={<AdvertisementSlotCharges />} />
