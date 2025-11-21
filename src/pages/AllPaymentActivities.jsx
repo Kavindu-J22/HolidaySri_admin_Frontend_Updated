@@ -220,7 +220,7 @@ const AllPaymentActivities = () => {
         <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4 sm:p-6 border border-purple-200 dark:border-purple-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-purple-800 dark:text-purple-400">Total Amount</p>
+              <p className="text-sm font-medium text-purple-800 dark:text-purple-400">Total Amount (HSC)</p>
               <p className="text-2xl font-bold text-purple-900 dark:text-purple-300">
                 {stats.totalAmount.toLocaleString()}
               </p>
@@ -232,7 +232,7 @@ const AllPaymentActivities = () => {
         <div className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-xl p-4 sm:p-6 border border-orange-200 dark:border-orange-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-orange-800 dark:text-orange-400">Total Discounts</p>
+              <p className="text-sm font-medium text-orange-800 dark:text-orange-400">Total Discounts (HSC)</p>
               <p className="text-2xl font-bold text-orange-900 dark:text-orange-300">
                 {stats.totalDiscountedAmount.toLocaleString()}
               </p>
@@ -244,7 +244,7 @@ const AllPaymentActivities = () => {
         <div className="bg-gradient-to-r from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 rounded-xl p-4 sm:p-6 border border-teal-200 dark:border-teal-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-teal-800 dark:text-teal-400">Original Amount</p>
+              <p className="text-sm font-medium text-teal-800 dark:text-teal-400">Original Amount (HSC)</p>
               <p className="text-2xl font-bold text-teal-900 dark:text-teal-300">
                 {stats.totalOriginalAmount.toLocaleString()}
               </p>
