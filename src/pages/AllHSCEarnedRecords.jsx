@@ -161,7 +161,7 @@ const AllHSCEarnedRecords = () => {
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Pending</p>
               <p className="text-2xl font-bold text-yellow-600">{stats.pending?.count || 0}</p>
-              <p className="text-xs text-gray-500">LKR {(stats.pending?.totalAmount || 0).toFixed(2)}</p>
+              <p className="text-xs text-gray-500">HSC {(stats.pending?.totalAmount || 0).toFixed(2)}</p>
             </div>
             <Clock className="w-8 h-8 text-yellow-500" />
           </div>
@@ -172,7 +172,7 @@ const AllHSCEarnedRecords = () => {
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Completed</p>
               <p className="text-2xl font-bold text-green-600">{stats.completed?.count || 0}</p>
-              <p className="text-xs text-gray-500">LKR {(stats.completed?.totalAmount || 0).toFixed(2)}</p>
+              <p className="text-xs text-gray-500">HSC {(stats.completed?.totalAmount || 0).toFixed(2)}</p>
             </div>
             <CheckCircle className="w-8 h-8 text-green-500" />
           </div>
@@ -183,7 +183,7 @@ const AllHSCEarnedRecords = () => {
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Cancelled</p>
               <p className="text-2xl font-bold text-red-600">{stats.cancelled?.count || 0}</p>
-              <p className="text-xs text-gray-500">LKR {(stats.cancelled?.totalAmount || 0).toFixed(2)}</p>
+              <p className="text-xs text-gray-500">HSC {(stats.cancelled?.totalAmount || 0).toFixed(2)}</p>
             </div>
             <XCircle className="w-8 h-8 text-red-500" />
           </div>
@@ -194,7 +194,7 @@ const AllHSCEarnedRecords = () => {
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Paid As HSC</p>
               <p className="text-2xl font-bold text-blue-600">{stats['paid As HSC']?.count || 0}</p>
-              <p className="text-xs text-gray-500">LKR {(stats['paid As HSC']?.totalAmount || 0).toFixed(2)}</p>
+              <p className="text-xs text-gray-500">HSC {(stats['paid As HSC']?.totalAmount || 0).toFixed(2)}</p>
             </div>
             <DollarSign className="w-8 h-8 text-blue-500" />
           </div>
@@ -205,7 +205,7 @@ const AllHSCEarnedRecords = () => {
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Paid As LKR</p>
               <p className="text-2xl font-bold text-purple-600">{stats['paid As LKR']?.count || 0}</p>
-              <p className="text-xs text-gray-500">LKR {(stats['paid As LKR']?.totalAmount || 0).toFixed(2)}</p>
+              <p className="text-xs text-gray-500">HSC {(stats['paid As LKR']?.totalAmount || 0).toFixed(2)}</p>
             </div>
             <DollarSign className="w-8 h-8 text-purple-500" />
           </div>
@@ -216,7 +216,7 @@ const AllHSCEarnedRecords = () => {
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Total</p>
               <p className="text-2xl font-bold text-indigo-600">{stats.total?.count || 0}</p>
-              <p className="text-xs text-gray-500">LKR {(stats.total?.totalAmount || 0).toFixed(2)}</p>
+              <p className="text-xs text-gray-500">HSC {(stats.total?.totalAmount || 0).toFixed(2)}</p>
             </div>
             <TrendingUp className="w-8 h-8 text-indigo-500" />
           </div>
@@ -303,7 +303,7 @@ const AllHSCEarnedRecords = () => {
                   Promo Code
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Amount (LKR)
+                  Amount (HSC)
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Status
@@ -376,7 +376,7 @@ const AllHSCEarnedRecords = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-bold text-green-600 dark:text-green-400">
-                        LKR {record.earnedAmount?.toFixed(2) || '0.00'}
+                        HSC {record.earnedAmount?.toFixed(2) || '0.00'}
                       </div>
                       <div className="text-xs text-gray-500 dark:text-gray-400">
                         {record.itemDetails?.sellingPriceLKR ? `(${record.itemDetails.sellingPriceLKR.toFixed(2)})` : ''}

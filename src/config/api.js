@@ -183,6 +183,14 @@ export const adminAPI = {
   updateExpense: (id, data) => api.put(`/company-finance/expenses/${id}`, data),
   deleteExpense: (id) => api.delete(`/company-finance/expenses/${id}`),
   getExpenseDetails: (id) => api.get(`/company-finance/expenses/${id}`),
+
+  // Holiday Memories (Photos from Travelers) Management
+  getHolidayMemories: (params) => api.get("/admin/holiday-memories", { params }),
+  getHolidayMemoryDetails: (photoId) => api.get(`/admin/holiday-memories/${photoId}`),
+  updateHolidayMemory: (photoId, data) => api.put(`/admin/holiday-memories/${photoId}`, data),
+  deleteHolidayMemory: (photoId, data) => api.delete(`/admin/holiday-memories/${photoId}`, { data }),
+  deleteHolidayMemoryComment: (photoId, commentId) =>
+    api.delete(`/admin/holiday-memories/${photoId}/comments/${commentId}`),
 };
 
 export default api;

@@ -29,7 +29,8 @@ import {
   Receipt,
   Bed,
   Megaphone,
-  Banknote
+  Banknote,
+  Camera
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -176,6 +177,11 @@ const Layout = () => {
       name: 'Money Transactions',
       path: '/money-transactions',
       icon: Banknote,
+    },
+    {
+      name: 'Photos from Travelers',
+      path: '/photos-from-travelers',
+      icon: Camera,
     }
   ];
 
