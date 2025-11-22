@@ -30,7 +30,8 @@ import {
   Bed,
   Megaphone,
   Banknote,
-  Camera
+  Camera,
+  Image
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -149,12 +150,7 @@ const Layout = () => {
       icon: Calendar,
     },
     {
-      name: 'Newsletter Subscribers & Email manager',
-      path: '/newsletter-subscribers',
-      icon: Mail,
-    },
-    {
-      name: 'All Users Earnings',
+      name: 'All Users PromoCode Earnings',
       path: '/all-earnings',
       icon: Wallet,
     },
@@ -182,6 +178,16 @@ const Layout = () => {
       name: 'Photos from Travelers',
       path: '/photos-from-travelers',
       icon: Camera,
+    },
+    {
+      name: 'All Image Selling Earnings',
+      path: '/image-selling-earnings',
+      icon: Image,
+    },
+        {
+      name: 'Newsletter Subscribers & Email manager',
+      path: '/newsletter-subscribers',
+      icon: Mail,
     }
   ];
 
