@@ -272,7 +272,7 @@ const Layout = () => {
           bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm
           border-r border-gray-200 dark:border-gray-700 transform transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          mt-16 lg:mt-0 glass-shine
+          mt-16 lg:mt-0
         `}>
           <div className="p-6">
             <nav className="space-y-2">
