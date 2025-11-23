@@ -6,13 +6,21 @@ import {
   CheckCircle,
   XCircle,
   ShieldCheck,
+  ShieldAlert,
   X,
   RefreshCw,
   DollarSign,
   Crown,
-  Briefcase
+  Briefcase,
+  FileText,
+  Image as ImageIcon,
+  Calendar,
+  Edit,
+  Save,
+  AlertCircle
 } from 'lucide-react';
 import { adminAPI } from '../config/api';
+import ImageViewerModal from '../components/ImageViewerModal';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -33,6 +41,17 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+
+  // Image viewer
+  const [showImageViewer, setShowImageViewer] = useState(false);
+  const [viewerImages, setViewerImages] = useState([]);
+  const [viewerInitialIndex, setViewerInitialIndex] = useState(0);
+
+  // Verification editing
+  const [editingVerification, setEditingVerification] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState('');
+  const [verificationNotes, setVerificationNotes] = useState('');
+  const [savingVerification, setSavingVerification] = useState(false);
 
   // Fetch users
   const fetchUsers = async () => {
@@ -89,15 +108,70 @@ const UserManagement = () => {
     setSelectedUser(user);
     setShowDetailModal(true);
     setLoadingDetails(true);
+    setEditingVerification(false);
 
     try {
       const response = await adminAPI.getUserDetails(user._id);
       setUserDetails(response.data);
+      // Initialize verification state
+      setVerificationStatus(response.data.user.verificationStatus || 'pending');
+      setVerificationNotes(response.data.user.verificationNotes || '');
     } catch (error) {
       console.error('Error fetching user details:', error);
       setError('Failed to fetch user details');
     } finally {
       setLoadingDetails(false);
+    }
+  };
+
+  // Handle verification document image viewing
+  const handleViewDocuments = (documents) => {
+    const images = [];
+    if (documents.nicFront) {
+      images.push({ url: documents.nicFront, label: 'NIC Front' });
+    }
+    if (documents.nicBack) {
+      images.push({ url: documents.nicBack, label: 'NIC Back' });
+    }
+    if (documents.passport) {
+      images.push({ url: documents.passport, label: 'Passport' });
+    }
+
+    if (images.length > 0) {
+      setViewerImages(images);
+      setViewerInitialIndex(0);
+      setShowImageViewer(true);
+    }
+  };
+
+  // Handle verification status update
+  const handleSaveVerification = async () => {
+    if (!userDetails?.user?._id) return;
+
+    setSavingVerification(true);
+    try {
+      await adminAPI.updateUserVerification(
+        userDetails.user._id,
+        verificationStatus,
+        verificationNotes
+      );
+
+      setSuccessMessage('Verification status updated successfully');
+      setTimeout(() => setSuccessMessage(''), 3000);
+
+      // Refresh user details
+      const response = await adminAPI.getUserDetails(userDetails.user._id);
+      setUserDetails(response.data);
+      setEditingVerification(false);
+
+      // Refresh users list
+      fetchUsers();
+    } catch (error) {
+      console.error('Error updating verification:', error);
+      setError('Failed to update verification status');
+      setTimeout(() => setError(''), 3000);
+    } finally {
+      setSavingVerification(false);
     }
   };
 
@@ -615,41 +689,249 @@ const UserManagement = () => {
                     </div>
                   )}
 
+                  {/* User Verification Section */}
+                  <div className="card p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                        <ShieldCheck className="w-5 h-5 mr-2 text-purple-500" />
+                        User Verification
+                      </h3>
+                      {!editingVerification ? (
+                        <button
+                          onClick={() => setEditingVerification(true)}
+                          className="inline-flex items-center px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Edit Status
+                        </button>
+                      ) : (
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={handleSaveVerification}
+                            disabled={savingVerification}
+                            className="inline-flex items-center px-3 py-1.5 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                          >
+                            <Save className="w-4 h-4 mr-1" />
+                            {savingVerification ? 'Saving...' : 'Save'}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setEditingVerification(false);
+                              setVerificationStatus(userDetails.user.verificationStatus || 'pending');
+                              setVerificationNotes(userDetails.user.verificationNotes || '');
+                            }}
+                            disabled={savingVerification}
+                            className="inline-flex items-center px-3 py-1.5 text-sm bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors disabled:opacity-50"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Verification Status */}
+                      <div>
+                        <label className="text-sm text-gray-600 dark:text-gray-400 mb-2 block">Verification Status</label>
+                        {editingVerification ? (
+                          <select
+                            value={verificationStatus}
+                            onChange={(e) => setVerificationStatus(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="verified">Verified</option>
+                            <option value="rejected">Rejected</option>
+                          </select>
+                        ) : (
+                          <div>
+                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                              userDetails.user.verificationStatus === 'verified'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                                : userDetails.user.verificationStatus === 'rejected'
+                                ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+                                : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
+                            }`}>
+                              {userDetails.user.verificationStatus === 'verified' && <ShieldCheck className="w-4 h-4 mr-1" />}
+                              {userDetails.user.verificationStatus === 'rejected' && <XCircle className="w-4 h-4 mr-1" />}
+                              {userDetails.user.verificationStatus === 'pending' && <ShieldAlert className="w-4 h-4 mr-1" />}
+                              {userDetails.user.verificationStatus?.charAt(0).toUpperCase() + userDetails.user.verificationStatus?.slice(1)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Is Verified */}
+                      <div>
+                        <label className="text-sm text-gray-600 dark:text-gray-400">Verified</label>
+                        <p className="text-gray-900 dark:text-white font-medium">
+                          {userDetails.user.isVerified ? (
+                            <span className="text-green-600 dark:text-green-400">✓ Yes</span>
+                          ) : (
+                            <span className="text-red-600 dark:text-red-400">✗ No</span>
+                          )}
+                        </p>
+                      </div>
+
+                      {/* Verification Submitted At */}
+                      {userDetails.user.verificationSubmittedAt && (
+                        <div>
+                          <label className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                            <Calendar className="w-3.5 h-3.5 mr-1" />
+                            Submitted At
+                          </label>
+                          <p className="text-gray-900 dark:text-white font-medium">
+                            {formatDate(userDetails.user.verificationSubmittedAt)}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Verification Completed At */}
+                      {userDetails.user.verificationCompletedAt && (
+                        <div>
+                          <label className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                            <Calendar className="w-3.5 h-3.5 mr-1" />
+                            Completed At
+                          </label>
+                          <p className="text-gray-900 dark:text-white font-medium">
+                            {formatDate(userDetails.user.verificationCompletedAt)}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Verification Documents */}
+                    {userDetails.user.verificationDocuments && (
+                      Object.values(userDetails.user.verificationDocuments).some(doc => doc) && (
+                        <div className="mt-4">
+                          <label className="text-sm text-gray-600 dark:text-gray-400 mb-2 flex items-center">
+                            <FileText className="w-3.5 h-3.5 mr-1" />
+                            Verification Documents
+                          </label>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {userDetails.user.verificationDocuments.nicFront && (
+                              <button
+                                onClick={() => handleViewDocuments(userDetails.user.verificationDocuments)}
+                                className="relative group overflow-hidden rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+                              >
+                                <img
+                                  src={userDetails.user.verificationDocuments.nicFront}
+                                  alt="NIC Front"
+                                  className="w-full h-32 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center">
+                                  <ImageIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs py-1 px-2">
+                                  NIC Front
+                                </div>
+                              </button>
+                            )}
+                            {userDetails.user.verificationDocuments.nicBack && (
+                              <button
+                                onClick={() => handleViewDocuments(userDetails.user.verificationDocuments)}
+                                className="relative group overflow-hidden rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+                              >
+                                <img
+                                  src={userDetails.user.verificationDocuments.nicBack}
+                                  alt="NIC Back"
+                                  className="w-full h-32 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center">
+                                  <ImageIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs py-1 px-2">
+                                  NIC Back
+                                </div>
+                              </button>
+                            )}
+                            {userDetails.user.verificationDocuments.passport && (
+                              <button
+                                onClick={() => handleViewDocuments(userDetails.user.verificationDocuments)}
+                                className="relative group overflow-hidden rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+                              >
+                                <img
+                                  src={userDetails.user.verificationDocuments.passport}
+                                  alt="Passport"
+                                  className="w-full h-32 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center">
+                                  <ImageIcon className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs py-1 px-2">
+                                  Passport
+                                </div>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    )}
+
+                    {/* Verification Notes */}
+                    <div className="mt-4">
+                      <label className="text-sm text-gray-600 dark:text-gray-400 mb-2 flex items-center">
+                        <AlertCircle className="w-3.5 h-3.5 mr-1" />
+                        Admin Notes
+                      </label>
+                      {editingVerification ? (
+                        <textarea
+                          value={verificationNotes}
+                          onChange={(e) => setVerificationNotes(e.target.value)}
+                          rows={3}
+                          placeholder="Add notes about the verification..."
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                        />
+                      ) : (
+                        <p className="text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                          {userDetails.user.verificationNotes || 'No notes available'}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
                   {/* Bank Details */}
                   {userDetails.user.bankDetails && Object.keys(userDetails.user.bankDetails).some(key => userDetails.user.bankDetails[key]) && (
                     <div className="card p-6">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <DollarSign className="w-5 h-5 mr-2 text-green-500" />
                         Bank Details
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {userDetails.user.bankDetails.bank && (
-                          <div>
-                            <label className="text-sm text-gray-600 dark:text-gray-400">Bank</label>
-                            <p className="text-gray-900 dark:text-white font-medium">{userDetails.user.bankDetails.bank}</p>
+                          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <label className="text-sm text-gray-600 dark:text-gray-400">Bank Name</label>
+                            <p className="text-gray-900 dark:text-white font-medium mt-1">{userDetails.user.bankDetails.bank}</p>
                           </div>
                         )}
                         {userDetails.user.bankDetails.branch && (
-                          <div>
+                          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                             <label className="text-sm text-gray-600 dark:text-gray-400">Branch</label>
-                            <p className="text-gray-900 dark:text-white font-medium">{userDetails.user.bankDetails.branch}</p>
+                            <p className="text-gray-900 dark:text-white font-medium mt-1">{userDetails.user.bankDetails.branch}</p>
                           </div>
                         )}
                         {userDetails.user.bankDetails.accountNo && (
-                          <div>
+                          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                             <label className="text-sm text-gray-600 dark:text-gray-400">Account Number</label>
-                            <p className="text-gray-900 dark:text-white font-medium">{userDetails.user.bankDetails.accountNo}</p>
+                            <p className="text-gray-900 dark:text-white font-medium mt-1 font-mono">{userDetails.user.bankDetails.accountNo}</p>
                           </div>
                         )}
                         {userDetails.user.bankDetails.accountName && (
-                          <div>
+                          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                             <label className="text-sm text-gray-600 dark:text-gray-400">Account Name</label>
-                            <p className="text-gray-900 dark:text-white font-medium">{userDetails.user.bankDetails.accountName}</p>
+                            <p className="text-gray-900 dark:text-white font-medium mt-1">{userDetails.user.bankDetails.accountName}</p>
+                          </div>
+                        )}
+                        {userDetails.user.bankDetails.postalCode && (
+                          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <label className="text-sm text-gray-600 dark:text-gray-400">Postal Code</label>
+                            <p className="text-gray-900 dark:text-white font-medium mt-1">{userDetails.user.bankDetails.postalCode}</p>
                           </div>
                         )}
                         {userDetails.user.bankDetails.binanceId && (
-                          <div>
+                          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
                             <label className="text-sm text-gray-600 dark:text-gray-400">Binance ID</label>
-                            <p className="text-gray-900 dark:text-white font-medium">{userDetails.user.bankDetails.binanceId}</p>
+                            <p className="text-gray-900 dark:text-white font-medium mt-1 font-mono">{userDetails.user.bankDetails.binanceId}</p>
                           </div>
                         )}
                       </div>
@@ -747,6 +1029,15 @@ const UserManagement = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Image Viewer Modal */}
+      {showImageViewer && (
+        <ImageViewerModal
+          images={viewerImages}
+          initialIndex={viewerInitialIndex}
+          onClose={() => setShowImageViewer(false)}
+        />
       )}
     </div>
   );

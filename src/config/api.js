@@ -51,6 +51,8 @@ export const adminAPI = {
   getUserDetails: (userId) => api.get(`/admin/users/${userId}`),
   updateUserStatus: (userId, isActive) =>
     api.put(`/admin/users/${userId}/status`, { isActive }),
+  updateUserVerification: (userId, verificationStatus, verificationNotes) =>
+    api.put(`/admin/users/${userId}/verification`, { verificationStatus, verificationNotes }),
   getHSCPackages: () => api.get("/admin/hsc-packages"),
   createHSCPackage: (packageData) =>
     api.post("/admin/hsc-packages", packageData),
