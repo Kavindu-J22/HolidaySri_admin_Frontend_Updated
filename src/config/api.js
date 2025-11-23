@@ -178,6 +178,9 @@ export const adminAPI = {
   deleteAdvertisement: (adId, slotId, adminNote) =>
     api.delete(`/admin/advertisements/${adId}`, { data: { slotId, adminNote } }),
 
+  // Donation Withdrawal Requests Management
+  getDonationWithdrawalRequests: () => api.get("/donations-raise-fund/admin/withdrawal-requests"),
+
   // Company Finance Management
   getFinancialSummary: (params) => api.get("/company-finance/summary", { params }),
   getEarnings: (params) => api.get("/company-finance/earnings", { params }),

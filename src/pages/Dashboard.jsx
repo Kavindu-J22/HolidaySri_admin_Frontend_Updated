@@ -66,8 +66,11 @@ const Dashboard = () => {
       const hscClaimsRes = await adminAPI.getHSCEarnedClaims({ page: 1, limit: 5 });
       setRecentHSCClaims(hscClaimsRes.data.claimRequests || []);
 
-      // Note: Donation withdrawals use different API endpoint
-      // We'll handle it separately if needed
+      // Fetch recent donation withdrawal requests
+      const donationWithdrawalsRes = await adminAPI.getDonationWithdrawalRequests();
+      // Get only the 5 most recent ones
+      const recentWithdrawals = (donationWithdrawalsRes.data.data || []).slice(0, 5);
+      setRecentDonationWithdrawals(recentWithdrawals);
     } catch (error) {
       console.error('Failed to fetch recent activities:', error);
     }
@@ -341,7 +344,7 @@ const Dashboard = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {payment.finalAmount} {payment.paymentMethod}
+                    {payment.amount} {payment.paymentMethod}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     {new Date(payment.createdAt).toLocaleDateString()}
@@ -396,7 +399,7 @@ const Dashboard = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                    LKR {(claim.claimAmount || 0).toLocaleString()}
+                    LKR {(claim.totalAmount || 0).toLocaleString()}
                   </p>
                   <span className={`text-xs px-2 py-1 rounded-full ${
                     claim.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300' :
@@ -451,7 +454,7 @@ const Dashboard = () => {
                       {claim.userId?.name || 'Unknown User'}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {claim.hscAmount || 0} HSC → LKR {(claim.lkrAmount || 0).toLocaleString()}
+                      {claim.totalHSCAmount || 0} HSC → LKR {(claim.totalLKRAmount || 0).toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -488,11 +491,48 @@ const Dashboard = () => {
             <ArrowUpRight className="w-4 h-4" />
           </button>
         </div>
-        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-          <Package className="w-12 h-12 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">
-            Visit the Donation Withdrawal Requests page to view all requests
-          </p>
+        <div className="space-y-3">
+          {recentDonationWithdrawals.length > 0 ? (
+            recentDonationWithdrawals.map((request, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className={`p-2 rounded-lg ${
+                    request.withdrawalRequest?.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/20' :
+                    request.withdrawalRequest?.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20' :
+                    'bg-red-100 dark:bg-red-900/20'
+                  }`}>
+                    {request.withdrawalRequest?.status === 'pending' ? <Clock className="w-4 h-4 text-yellow-600" /> :
+                     request.withdrawalRequest?.status === 'approved' ? <CheckCircle className="w-4 h-4 text-green-600" /> :
+                     <XCircle className="w-4 h-4 text-red-600" />}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {request.title || 'Unknown Campaign'}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {request.organizer || 'N/A'}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                    {request.totalDonatedHSC?.toFixed(2) || 0} HSC
+                  </p>
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    request.withdrawalRequest?.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300' :
+                    request.withdrawalRequest?.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :
+                    'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300'
+                  }`}>
+                    {request.withdrawalRequest?.status || 'N/A'}
+                  </span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+              No recent donation withdrawal requests
+            </p>
+          )}
         </div>
       </div>
 
