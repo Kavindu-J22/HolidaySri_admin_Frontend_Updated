@@ -197,9 +197,12 @@ export const adminAPI = {
 
   // Database Backup Management
   getBackupStatus: () => api.get("/admin/database-backup/status"),
+  getAllBackups: () => api.get("/admin/database-backup/all"),
   triggerManualBackup: () => api.post("/admin/database-backup/trigger"),
   restoreFromBackup: (confirmRestore) =>
     api.post("/admin/database-backup/restore", { confirmRestore }),
+  restoreFromSpecificBackup: (fileName, confirmRestore) =>
+    api.post("/admin/database-backup/restore-specific", { fileName, confirmRestore }),
 };
 
 export default api;

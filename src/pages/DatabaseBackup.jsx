@@ -13,19 +13,26 @@ import {
   Activity,
   Loader,
   RotateCcw,
-  Shield
+  Shield,
+  ChevronDown,
+  ChevronUp,
+  Archive
 } from 'lucide-react';
 import { adminAPI } from '../config/api';
 
 const DatabaseBackup = () => {
   const [backupStatus, setBackupStatus] = useState(null);
+  const [allBackups, setAllBackups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
+  const [restoreFileName, setRestoreFileName] = useState(null);
+  const [expandedBackup, setExpandedBackup] = useState(null);
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
     fetchBackupStatus();
+    fetchAllBackups();
   }, []);
 
   const fetchBackupStatus = async () => {
@@ -44,6 +51,15 @@ const DatabaseBackup = () => {
     }
   };
 
+  const fetchAllBackups = async () => {
+    try {
+      const response = await adminAPI.getAllBackups();
+      setAllBackups(response.data.backups || []);
+    } catch (error) {
+      console.error('Error fetching all backups:', error);
+    }
+  };
+
   const handleManualBackup = async () => {
     try {
       setActionLoading(true);
@@ -55,9 +71,10 @@ const DatabaseBackup = () => {
         type: 'success',
         text: 'Backup completed successfully!'
       });
-      
-      // Refresh backup status
+
+      // Refresh backup status and all backups
       await fetchBackupStatus();
+      await fetchAllBackups();
     } catch (error) {
       console.error('Error triggering backup:', error);
       setMessage({
@@ -69,22 +86,31 @@ const DatabaseBackup = () => {
     }
   };
 
-  const handleRestore = async () => {
+  const handleRestore = async (fileName = null) => {
     try {
       setActionLoading(true);
       setMessage({ type: '', text: '' });
-      
-      const response = await adminAPI.restoreFromBackup(true);
-      
+
+      let response;
+      if (fileName) {
+        // Restore from specific backup
+        response = await adminAPI.restoreFromSpecificBackup(fileName, true);
+      } else {
+        // Restore from last backup
+        response = await adminAPI.restoreFromBackup(true);
+      }
+
       setMessage({
         type: 'success',
         text: `Database restored successfully! ${response.data.restore.documents} documents restored.`
       });
-      
+
       setShowRestoreConfirm(false);
-      
+      setRestoreFileName(null);
+
       // Refresh backup status
       await fetchBackupStatus();
+      await fetchAllBackups();
     } catch (error) {
       console.error('Error restoring backup:', error);
       setMessage({
@@ -94,6 +120,11 @@ const DatabaseBackup = () => {
     } finally {
       setActionLoading(false);
     }
+  };
+
+  const openRestoreConfirm = (fileName = null) => {
+    setRestoreFileName(fileName);
+    setShowRestoreConfirm(true);
   };
 
   const formatDate = (timestamp) => {
@@ -316,7 +347,7 @@ const DatabaseBackup = () => {
               </button>
 
               <button
-                onClick={() => setShowRestoreConfirm(true)}
+                onClick={() => openRestoreConfirm(null)}
                 disabled={actionLoading}
                 className="btn-danger flex items-center"
               >
@@ -325,6 +356,87 @@ const DatabaseBackup = () => {
               </button>
             </div>
           </div>
+
+          {/* All Backups */}
+          {allBackups.length > 0 && (
+            <div className="card p-6">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                <Archive className="w-6 h-6 mr-2 text-admin-600" />
+                All Backups ({allBackups.length})
+              </h2>
+              <div className="space-y-3">
+                {allBackups.map((backup, index) => (
+                  <div
+                    key={backup.fileName}
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+                  >
+                    {/* Backup Header */}
+                    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50">
+                      <div className="flex items-center space-x-3 flex-1">
+                        <Database className="w-5 h-5 text-admin-600 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900 dark:text-white truncate">
+                            {backup.fileName}
+                          </p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {formatDate(backup.timestamp)} • {backup.compressedSize}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => openRestoreConfirm(backup.fileName)}
+                          disabled={actionLoading}
+                          className="btn-sm btn-danger flex items-center"
+                        >
+                          <RotateCcw className="w-3 h-3 mr-1" />
+                          Restore
+                        </button>
+                        <button
+                          onClick={() => setExpandedBackup(expandedBackup === index ? null : index)}
+                          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                        >
+                          {expandedBackup === index ? (
+                            <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                          ) : (
+                            <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Backup Details (Expandable) */}
+                    {expandedBackup === index && (
+                      <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Database</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{backup.database}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">File Size</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{backup.compressedSize}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Backup Date</p>
+                            <p className="font-medium text-gray-900 dark:text-white">
+                              {formatDate(backup.timestamp)}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">File Name</p>
+                            <p className="font-medium text-gray-900 dark:text-white break-all text-sm">
+                              {backup.fileName}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -338,10 +450,18 @@ const DatabaseBackup = () => {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                   Confirm Database Restore
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  This action will <strong>DELETE ALL EXISTING DATA</strong> and restore from the last backup.
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
+                  This action will <strong>DELETE ALL EXISTING DATA</strong> and restore from {restoreFileName ? 'the selected backup' : 'the last backup'}.
                   This cannot be undone!
                 </p>
+                {restoreFileName && (
+                  <div className="mt-3 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Restoring from:</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white break-all">
+                      {restoreFileName}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -353,14 +473,17 @@ const DatabaseBackup = () => {
 
             <div className="flex justify-end space-x-3">
               <button
-                onClick={() => setShowRestoreConfirm(false)}
+                onClick={() => {
+                  setShowRestoreConfirm(false);
+                  setRestoreFileName(null);
+                }}
                 disabled={actionLoading}
                 className="btn-secondary"
               >
                 Cancel
               </button>
               <button
-                onClick={handleRestore}
+                onClick={() => handleRestore(restoreFileName)}
                 disabled={actionLoading}
                 className="btn-danger flex items-center"
               >
