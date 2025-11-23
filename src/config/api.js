@@ -194,6 +194,12 @@ export const adminAPI = {
   deleteHolidayMemory: (photoId, data) => api.delete(`/admin/holiday-memories/${photoId}`, { data }),
   deleteHolidayMemoryComment: (photoId, commentId) =>
     api.delete(`/admin/holiday-memories/${photoId}/comments/${commentId}`),
+
+  // Database Backup Management
+  getBackupStatus: () => api.get("/admin/database-backup/status"),
+  triggerManualBackup: () => api.post("/admin/database-backup/trigger"),
+  restoreFromBackup: (confirmRestore) =>
+    api.post("/admin/database-backup/restore", { confirmRestore }),
 };
 
 export default api;

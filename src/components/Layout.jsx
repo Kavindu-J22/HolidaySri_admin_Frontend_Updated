@@ -31,7 +31,8 @@ import {
   Megaphone,
   Banknote,
   Camera,
-  Image
+  Image,
+  HardDrive
 } from 'lucide-react';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -188,6 +189,11 @@ const Layout = () => {
       name: 'Newsletter Subscribers & Email manager',
       path: '/newsletter-subscribers',
       icon: Mail,
+    },
+    {
+      name: 'Database Backup',
+      path: '/database-backup',
+      icon: HardDrive,
     }
   ];
 

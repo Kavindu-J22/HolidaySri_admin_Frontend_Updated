@@ -34,6 +34,7 @@ import UsersRoomBookings from './pages/UsersRoomBookings';
 import MoneyTransactions from './pages/MoneyTransactions';
 import PhotosFromTravelers from './pages/PhotosFromTravelers';
 import ImageSellingEarnings from './pages/ImageSellingEarnings';
+import DatabaseBackup from './pages/DatabaseBackup';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -81,6 +82,7 @@ function App() {
                 <Route path="money-transactions" element={<MoneyTransactions />} />
                 <Route path="photos-from-travelers" element={<PhotosFromTravelers />} />
                 <Route path="image-selling-earnings" element={<ImageSellingEarnings />} />
+                <Route path="database-backup" element={<DatabaseBackup />} />
 
                 {/* Advertisement Management */}
                 <Route path="advertisements" element={<AdvertisementSlotCharges />} />
