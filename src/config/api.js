@@ -168,6 +168,7 @@ export const adminAPI = {
   // Payment Activities Management
   getPaymentActivities: (params) => api.get("/admin/payment-activities", { params }),
   getPaymentActivityDetails: (activityId) => api.get(`/admin/payment-activities/${activityId}`),
+  deleteAllPaymentActivities: (confirmation) => api.delete("/admin/payment-activities/all/records", { data: { confirmation } }),
 
   // Room Bookings Management
   getRoomBookings: (params) => api.get("/admin/room-bookings", { params }),

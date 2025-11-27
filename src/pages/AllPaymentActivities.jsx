@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  CreditCard, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
-  User, 
+import {
+  CreditCard,
+  Clock,
+  CheckCircle,
+  XCircle,
+  User,
   Calendar,
   Eye,
   Search,
@@ -14,7 +14,8 @@ import {
   Package,
   RefreshCw,
   X,
-  ChevronDown
+  ChevronDown,
+  Trash2
 } from 'lucide-react';
 import { adminAPI } from '../config/api';
 
@@ -37,6 +38,9 @@ const AllPaymentActivities = () => {
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
     category: 'all',
@@ -166,6 +170,41 @@ const AllPaymentActivities = () => {
     });
   };
 
+  const handleDeleteAllRecords = async () => {
+    if (deleteConfirmation !== 'Confirm') {
+      alert('Please type "Confirm" to delete all records');
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      const response = await adminAPI.deleteAllPaymentActivities(deleteConfirmation);
+
+      if (response.data.success) {
+        alert(`Successfully deleted ${response.data.deletedCount} payment activity records.`);
+        setShowDeleteModal(false);
+        setDeleteConfirmation('');
+        // Refresh the activities list
+        fetchActivities();
+      }
+    } catch (error) {
+      console.error('Failed to delete payment activities:', error);
+      alert(error.response?.data?.message || 'Failed to delete payment activities');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleOpenDeleteModal = () => {
+    setShowDeleteModal(true);
+    setDeleteConfirmation('');
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeleteConfirmation('');
+  };
+
   // Get unique categories from breakdown
   const categories = ['all', ...categoryBreakdown.map(item => item._id)];
   const paymentMethods = ['all', ...paymentMethodBreakdown.map(item => item._id)];
@@ -183,6 +222,13 @@ const AllPaymentActivities = () => {
             View all payment activities and track company earnings
           </p>
         </div>
+        <button
+          onClick={handleOpenDeleteModal}
+          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+        >
+          <Trash2 className="w-5 h-5" />
+          Clean All Records
+        </button>
       </div>
 
       {/* Company Profit Card */}
@@ -792,6 +838,74 @@ const AllPaymentActivities = () => {
               >
                 Close
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl max-w-md w-full shadow-2xl">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 bg-red-100 dark:bg-red-900/20 rounded-full">
+                  <Trash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Delete All Payment Records
+                </h3>
+              </div>
+
+              <div className="mb-6">
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  This action will permanently delete all payment activity records from the database.
+                  This action cannot be undone.
+                </p>
+                <p className="text-red-600 dark:text-red-400 font-semibold mb-4">
+                  Are you sure you want to continue?
+                </p>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Type <span className="font-bold text-red-600">"Confirm"</span> to delete all records
+                  </label>
+                  <input
+                    type="text"
+                    value={deleteConfirmation}
+                    onChange={(e) => setDeleteConfirmation(e.target.value)}
+                    placeholder="Type Confirm here"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    disabled={isDeleting}
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleCloseDeleteModal}
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteAllRecords}
+                  disabled={isDeleting || deleteConfirmation !== 'Confirm'}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isDeleting ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-4 h-4" />
+                      Delete All Records
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
