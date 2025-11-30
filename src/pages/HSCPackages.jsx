@@ -27,6 +27,8 @@ const HSCPackages = () => {
     name: '',
     hscAmount: '',
     discount: 0,
+    bonusHsgAmount: '',
+    bonusHsdAmount: '',
     isActive: true,
     description: '',
     features: ['']
@@ -63,6 +65,8 @@ const HSCPackages = () => {
       name: '',
       hscAmount: '',
       discount: 0,
+      bonusHsgAmount: '',
+      bonusHsdAmount: '',
       isActive: true,
       description: '',
       features: ['']
@@ -76,6 +80,8 @@ const HSCPackages = () => {
       name: pkg.name,
       hscAmount: pkg.hscAmount.toString(),
       discount: pkg.discount,
+      bonusHsgAmount: pkg.bonusHsgAmount?.toString() || '',
+      bonusHsdAmount: pkg.bonusHsdAmount?.toString() || '',
       isActive: pkg.isActive,
       description: pkg.description || '',
       features: pkg.features.length > 0 ? pkg.features : ['']
@@ -118,6 +124,10 @@ const HSCPackages = () => {
       return;
     }
 
+    // Parse bonus amounts (optional, default to 0)
+    const bonusHsgAmount = formData.bonusHsgAmount ? parseInt(formData.bonusHsgAmount) : 0;
+    const bonusHsdAmount = formData.bonusHsdAmount ? parseInt(formData.bonusHsdAmount) : 0;
+
     // Filter out empty features
     const features = formData.features.filter(feature => feature.trim() !== '');
 
@@ -125,6 +135,8 @@ const HSCPackages = () => {
       name: formData.name,
       hscAmount: hscAmount,
       discount: formData.discount,
+      bonusHsgAmount: bonusHsgAmount,
+      bonusHsdAmount: bonusHsdAmount,
       isActive: formData.isActive,
       description: formData.description,
       features: features
@@ -138,10 +150,10 @@ const HSCPackages = () => {
         await adminAPI.createHSCPackage(packageData);
         setSuccess('Package created successfully');
       }
-      
+
       resetForm();
       fetchPackages();
-      
+
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(null), 3000);
     } catch (error) {
@@ -306,6 +318,43 @@ const HSCPackages = () => {
                 </div>
               </div>
 
+              {/* Bonus HSG and HSD Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Bonus HSG Amount (Optional)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.bonusHsgAmount}
+                    onChange={(e) => setFormData({ ...formData, bonusHsgAmount: e.target.value })}
+                    className="input-field"
+                    placeholder="Enter bonus HSG amount"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    HSG tokens given as bonus with this package
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Bonus HSD Amount (Optional)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.bonusHsdAmount}
+                    onChange={(e) => setFormData({ ...formData, bonusHsdAmount: e.target.value })}
+                    className="input-field"
+                    placeholder="Enter bonus HSD amount"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    HSD tokens given as bonus with this package
+                  </p>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Description
@@ -441,6 +490,25 @@ const HSCPackages = () => {
                 )}
               </div>
             </div>
+
+            {/* Bonus Tokens Display */}
+            {(pkg.bonusHsgAmount > 0 || pkg.bonusHsdAmount > 0) && (
+              <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg border border-purple-200 dark:border-purple-700">
+                <h4 className="text-xs font-semibold text-purple-700 dark:text-purple-300 mb-2">🎁 Bonus Tokens:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {pkg.bonusHsgAmount > 0 && (
+                    <span className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 px-2 py-1 rounded-full text-xs font-medium">
+                      +{pkg.bonusHsgAmount} HSG
+                    </span>
+                  )}
+                  {pkg.bonusHsdAmount > 0 && (
+                    <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium">
+                      +{pkg.bonusHsdAmount} HSD
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
 
             {pkg.description && (
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
