@@ -101,6 +101,11 @@ const Layout = () => {
       icon: Database,
     },
     {
+      name: 'Donation Publication Requests',
+      path: '/donation-publication-requests',
+      icon: FileText,
+    },
+    {
       name: 'Donation Withdrawals',
       path: '/donation-withdrawals',
       icon: Heart,

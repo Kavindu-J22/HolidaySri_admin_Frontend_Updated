@@ -26,6 +26,7 @@ import CustomizeTourPackageManagement from './pages/CustomizeTourPackageManageme
 import CustomizeEventRequestManagement from './pages/CustomizeEventRequestManagement';
 import AdvertisementsManagement from './pages/AdvertisementsManagement';
 import DonationWithdrawalRequests from './pages/DonationWithdrawalRequests';
+import DonationPublicationRequests from './pages/DonationPublicationRequests';
 import PaidDonationFunds from './pages/PaidDonationFunds';
 import AllEarnings from './pages/AllEarnings';
 import UsersTransactionRecords from './pages/UsersTransactionRecords';
@@ -66,6 +67,7 @@ function App() {
                 <Route path="claiming-requests" element={<ClaimingRequests />} />
                 <Route path="hsc-earned-claims" element={<HSCEarnedClaims />} />
                 <Route path="all-hsc-earned-records" element={<AllHSCEarnedRecords />} />
+                <Route path="donation-publication-requests" element={<DonationPublicationRequests />} />
                 <Route path="donation-withdrawals" element={<DonationWithdrawalRequests />} />
                 <Route path="paid-donation-funds" element={<PaidDonationFunds />} />
                 <Route path="destinations" element={<DestinationManagement />} />
