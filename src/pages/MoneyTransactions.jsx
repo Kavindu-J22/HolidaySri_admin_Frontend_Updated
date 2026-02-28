@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  DollarSign, 
-  TrendingUp, 
+import {
+  DollarSign,
+  TrendingUp,
   TrendingDown,
   Wallet,
   Plus,
@@ -14,8 +14,10 @@ import {
   Edit,
   Trash2,
   X,
-  ChevronDown
+  ChevronDown,
+  FileSpreadsheet
 } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import { adminAPI } from '../config/api';
 
 const MoneyTransactions = () => {
@@ -251,6 +253,112 @@ const MoneyTransactions = () => {
     });
   };
 
+  const downloadExcelReport = async () => {
+    try {
+      setLoading(true);
+
+      // Fetch ALL earnings and expenses (high limit to get everything)
+      const [earningsRes, expensesRes] = await Promise.all([
+        adminAPI.getEarnings({ page: 1, limit: 9999, ...earningsFilters }),
+        adminAPI.getExpenses({ page: 1, limit: 9999, ...expensesFilters })
+      ]);
+
+      const allEarnings = earningsRes.data.transactions || [];
+      const allExpenses = expensesRes.data.expenses || [];
+
+      const wb = XLSX.utils.book_new();
+
+      // ── Sheet 1: Summary ──
+      const summaryData = [
+        ['HolidaySri - Financial Report'],
+        ['Generated On:', new Date().toLocaleString()],
+        [],
+        ['SUMMARY'],
+        ['Metric', 'Value (LKR)'],
+        ['Total Earnings', summary.totalEarnings],
+        ['Total Expenses', summary.totalExpenses],
+        ['Total Profit', summary.totalProfit],
+        ['Profit Margin (%)', summary.profitMargin],
+        ['Earnings Transactions', summary.earningsCount],
+        ['Expense Records', summary.expensesCount],
+      ];
+      const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+      wsSummary['!cols'] = [{ wch: 28 }, { wch: 22 }];
+      XLSX.utils.book_append_sheet(wb, wsSummary, 'Summary');
+
+      // ── Sheet 2: Earnings ──
+      const earningsHeader = [
+        'Date', 'User Name', 'User Email', 'Description',
+        'Category', 'Transaction Type', 'Payment Gateway',
+        'Amount (LKR)', 'Status'
+      ];
+      const earningsRows = allEarnings.map((t) => [
+        formatDate(t.createdAt),
+        t.userName || '',
+        t.userEmail || '',
+        t.description || '',
+        t.category || '',
+        t.transactionType || '',
+        t.paymentGateway || '',
+        t.amountLKR || 0,
+        t.status || ''
+      ]);
+      const wsEarnings = XLSX.utils.aoa_to_sheet([earningsHeader, ...earningsRows]);
+      wsEarnings['!cols'] = [
+        { wch: 22 }, { wch: 20 }, { wch: 28 }, { wch: 35 },
+        { wch: 18 }, { wch: 18 }, { wch: 16 }, { wch: 16 }, { wch: 12 }
+      ];
+      XLSX.utils.book_append_sheet(wb, wsEarnings, 'Earnings');
+
+      // ── Sheet 3: Expenses ──
+      const expensesHeader = [
+        'Payment Date', 'Vendor Name', 'Vendor Email', 'Description',
+        'Expense Type', 'Category', 'Payment Method', 'Payment Status',
+        'Amount (LKR)', 'Tax Amount (LKR)', 'Tax %',
+        'Transaction ID', 'Invoice No', 'Receipt No',
+        'Paid By', 'Approved By', 'Department', 'Notes'
+      ];
+      const expensesRows = allExpenses.map((e) => [
+        formatDate(e.paymentDate),
+        e.vendorName || '',
+        e.vendorEmail || '',
+        e.description || '',
+        e.expenseType || '',
+        e.category || '',
+        e.paymentMethod || '',
+        e.paymentStatus || '',
+        e.amountLKR || 0,
+        e.taxAmount || 0,
+        e.taxPercentage || 0,
+        e.transactionId || '',
+        e.invoiceNumber || '',
+        e.receiptNumber || '',
+        e.paidBy || '',
+        e.approvedBy || '',
+        e.department || '',
+        e.notes || ''
+      ]);
+      const wsExpenses = XLSX.utils.aoa_to_sheet([expensesHeader, ...expensesRows]);
+      wsExpenses['!cols'] = [
+        { wch: 22 }, { wch: 20 }, { wch: 28 }, { wch: 35 },
+        { wch: 18 }, { wch: 18 }, { wch: 16 }, { wch: 16 },
+        { wch: 16 }, { wch: 16 }, { wch: 10 },
+        { wch: 18 }, { wch: 16 }, { wch: 16 },
+        { wch: 16 }, { wch: 16 }, { wch: 16 }, { wch: 30 }
+      ];
+      XLSX.utils.book_append_sheet(wb, wsExpenses, 'Expenses');
+
+      // Download
+      const fileName = `HolidaySri_Financial_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+    } catch (error) {
+      console.error('Error generating Excel report:', error);
+      alert('Failed to generate Excel report. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -263,16 +371,27 @@ const MoneyTransactions = () => {
             Track company earnings and expenses
           </p>
         </div>
-        <button
-          onClick={() => {
-            fetchSummary();
-            activeTab === 'earnings' ? fetchEarnings() : fetchExpenses();
-          }}
-          className="btn-secondary flex items-center gap-2"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Refresh
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={downloadExcelReport}
+            disabled={loading}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg font-medium text-sm transition-colors shadow-sm"
+            title="Download Earnings & Expenses as Excel Report"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            {loading ? 'Generating...' : 'Download XL Report'}
+          </button>
+          <button
+            onClick={() => {
+              fetchSummary();
+              activeTab === 'earnings' ? fetchEarnings() : fetchExpenses();
+            }}
+            className="btn-secondary flex items-center gap-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -402,8 +521,91 @@ const MoneyTransactions = () => {
 
 // Earnings Tab Component
 const EarningsTab = ({ earnings, loading, filters, setFilters, pagination, setPagination, formatCurrency, formatDate }) => {
+  const [downloading, setDownloading] = useState(false);
+
+  const downloadEarningsReport = async () => {
+    try {
+      setDownloading(true);
+      const response = await adminAPI.getEarnings({ page: 1, limit: 9999, ...filters });
+      const allEarnings = response.data.transactions || [];
+
+      const wb = XLSX.utils.book_new();
+
+      // Summary block at top
+      const now = new Date();
+      const summaryBlock = [
+        ['HolidaySri - Earnings Report'],
+        ['Generated On:', now.toLocaleString()],
+        ['Total Records:', allEarnings.length],
+        ['Filters Applied:',
+          [
+            filters.search ? `Search: "${filters.search}"` : '',
+            filters.transactionType !== 'all' ? `Type: ${filters.transactionType}` : '',
+            filters.paymentGateway !== 'all' ? `Gateway: ${filters.paymentGateway}` : '',
+            filters.status !== 'all' ? `Status: ${filters.status}` : '',
+            filters.startDate ? `From: ${filters.startDate}` : '',
+            filters.endDate ? `To: ${filters.endDate}` : '',
+          ].filter(Boolean).join(' | ') || 'None'
+        ],
+        [],
+      ];
+
+      const header = [
+        'Date', 'User Name', 'User Email', 'Description',
+        'Category', 'Transaction Type', 'Payment Gateway',
+        'Amount (LKR)', 'Status'
+      ];
+      const rows = allEarnings.map((t) => [
+        formatDate(t.createdAt),
+        t.userName || '',
+        t.userEmail || '',
+        t.description || '',
+        t.category || '',
+        t.transactionType || '',
+        t.paymentGateway || '',
+        t.amountLKR || 0,
+        t.status || ''
+      ]);
+
+      // Total row
+      const totalEarnings = allEarnings.reduce((sum, t) => sum + (t.amountLKR || 0), 0);
+      const totalRow = ['', '', '', '', '', '', 'TOTAL (LKR)', totalEarnings, ''];
+
+      const ws = XLSX.utils.aoa_to_sheet([...summaryBlock, header, ...rows, [], totalRow]);
+      ws['!cols'] = [
+        { wch: 22 }, { wch: 20 }, { wch: 28 }, { wch: 35 },
+        { wch: 18 }, { wch: 18 }, { wch: 16 }, { wch: 16 }, { wch: 12 }
+      ];
+      XLSX.utils.book_append_sheet(wb, ws, 'Earnings');
+
+      const dateStr = now.toISOString().split('T')[0];
+      XLSX.writeFile(wb, `HolidaySri_Earnings_Report_${dateStr}.xlsx`);
+    } catch (error) {
+      console.error('Error generating earnings report:', error);
+      alert('Failed to generate Earnings report. Please try again.');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* Tab Header */}
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          Earnings Records
+        </h3>
+        <button
+          onClick={downloadEarningsReport}
+          disabled={downloading}
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg font-medium text-sm transition-colors shadow-sm"
+          title="Download current Earnings records as Excel"
+        >
+          <FileSpreadsheet className="w-4 h-4" />
+          {downloading ? 'Generating...' : 'Download Earnings XL'}
+        </button>
+      </div>
+
       {/* Filters */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
@@ -636,6 +838,8 @@ const ExpensesTab = ({
   formatCurrency,
   formatDate
 }) => {
+  const [downloading, setDownloading] = useState(false);
+
   const expenseTypes = [
     'Operational', 'Marketing', 'Salaries', 'Infrastructure', 'Software & Tools',
     'Legal & Compliance', 'Office Supplies', 'Utilities', 'Travel',
@@ -645,24 +849,115 @@ const ExpensesTab = ({
   const paymentMethods = ['Bank Transfer', 'Cash', 'Card', 'Cheque', 'Online Payment', 'Other'];
   const paymentStatuses = ['pending', 'paid', 'partially_paid', 'cancelled', 'refunded'];
 
+  const downloadExpensesReport = async () => {
+    try {
+      setDownloading(true);
+      const response = await adminAPI.getExpenses({ page: 1, limit: 9999, ...filters });
+      const allExpenses = response.data.expenses || [];
+
+      const wb = XLSX.utils.book_new();
+      const now = new Date();
+
+      // Summary block at top
+      const summaryBlock = [
+        ['HolidaySri - Expenses Report'],
+        ['Generated On:', now.toLocaleString()],
+        ['Total Records:', allExpenses.length],
+        ['Filters Applied:',
+          [
+            filters.search ? `Search: "${filters.search}"` : '',
+            filters.expenseType !== 'all' ? `Type: ${filters.expenseType}` : '',
+            filters.paymentStatus !== 'all' ? `Status: ${filters.paymentStatus}` : '',
+            filters.paymentMethod !== 'all' ? `Method: ${filters.paymentMethod}` : '',
+            filters.startDate ? `From: ${filters.startDate}` : '',
+            filters.endDate ? `To: ${filters.endDate}` : '',
+          ].filter(Boolean).join(' | ') || 'None'
+        ],
+        [],
+      ];
+
+      const header = [
+        'Payment Date', 'Vendor Name', 'Vendor Email', 'Description',
+        'Expense Type', 'Category', 'Payment Method', 'Payment Status',
+        'Amount (LKR)', 'Tax Amount (LKR)', 'Tax %',
+        'Transaction ID', 'Invoice No', 'Receipt No',
+        'Paid By', 'Approved By', 'Department', 'Notes'
+      ];
+      const rows = allExpenses.map((e) => [
+        formatDate(e.paymentDate),
+        e.vendorName || '',
+        e.vendorEmail || '',
+        e.description || '',
+        e.expenseType || '',
+        e.category || '',
+        e.paymentMethod || '',
+        e.paymentStatus || '',
+        e.amountLKR || 0,
+        e.taxAmount || 0,
+        e.taxPercentage || 0,
+        e.transactionId || '',
+        e.invoiceNumber || '',
+        e.receiptNumber || '',
+        e.paidBy || '',
+        e.approvedBy || '',
+        e.department || '',
+        e.notes || ''
+      ]);
+
+      // Total row
+      const totalExpenses = allExpenses.reduce((sum, e) => sum + (e.amountLKR || 0), 0);
+      const totalTax = allExpenses.reduce((sum, e) => sum + (e.taxAmount || 0), 0);
+      const totalRow = ['', '', '', '', '', '', '', 'TOTAL (LKR)', totalExpenses, totalTax, '', '', '', '', '', '', '', ''];
+
+      const ws = XLSX.utils.aoa_to_sheet([...summaryBlock, header, ...rows, [], totalRow]);
+      ws['!cols'] = [
+        { wch: 22 }, { wch: 20 }, { wch: 28 }, { wch: 35 },
+        { wch: 18 }, { wch: 18 }, { wch: 16 }, { wch: 16 },
+        { wch: 16 }, { wch: 16 }, { wch: 10 },
+        { wch: 18 }, { wch: 16 }, { wch: 16 },
+        { wch: 16 }, { wch: 16 }, { wch: 16 }, { wch: 30 }
+      ];
+      XLSX.utils.book_append_sheet(wb, ws, 'Expenses');
+
+      const dateStr = now.toISOString().split('T')[0];
+      XLSX.writeFile(wb, `HolidaySri_Expenses_Report_${dateStr}.xlsx`);
+    } catch (error) {
+      console.error('Error generating expenses report:', error);
+      alert('Failed to generate Expenses report. Please try again.');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Add Expense Button */}
+      {/* Header: title + action buttons */}
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           Company Expenses
         </h3>
-        <button
-          onClick={() => {
-            setShowExpenseForm(true);
-            setEditingExpense(null);
-            resetExpenseForm();
-          }}
-          className="btn-primary flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Add Expense
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={downloadExpensesReport}
+            disabled={downloading}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg font-medium text-sm transition-colors shadow-sm"
+            title="Download current Expenses records as Excel"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            {downloading ? 'Generating...' : 'Download Expenses XL'}
+          </button>
+          <button
+            onClick={() => {
+              setShowExpenseForm(true);
+              setEditingExpense(null);
+              resetExpenseForm();
+            }}
+            className="btn-primary flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Expense
+          </button>
+        </div>
       </div>
 
       {/* Expense Form Modal */}
